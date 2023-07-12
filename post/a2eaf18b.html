@@ -1,0 +1,1685 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MIMIC-IV2.0解析 | 饮茶</title><meta name="author" content="Yincha"><meta name="copyright" content="Yincha"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="MIMIC-IV2.0解析corecore模块包含三个表： patients：患者的人口统计数据    subject_id 患者的唯一标识符    gender 患者的性别   anchor_age 患者在入院时的年龄   anchor_year 患者在入院时的年份   anchor_year_grop 患者入院年份的分组  (按照年份将患者分成了5组)   dod 患者死亡日期，如果患者还活着">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIMIC-IV2.0解析">
+<meta property="og:url" content="http://wh1720848796.github.io/post/a2eaf18b.html">
+<meta property="og:site_name" content="饮茶">
+<meta property="og:description" content="MIMIC-IV2.0解析corecore模块包含三个表： patients：患者的人口统计数据    subject_id 患者的唯一标识符    gender 患者的性别   anchor_age 患者在入院时的年龄   anchor_year 患者在入院时的年份   anchor_year_grop 患者入院年份的分组  (按照年份将患者分成了5组)   dod 患者死亡日期，如果患者还活着">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wh1720848796.github.io/img/HatsuneMiku6.png">
+<meta property="article:published_time" content="2023-06-02T02:09:42.000Z">
+<meta property="article:modified_time" content="2023-06-15T13:21:47.456Z">
+<meta property="article:author" content="Yincha">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wh1720848796.github.io/img/HatsuneMiku6.png"><link rel="shortcut icon" href="/img/EmiyaShirou.png"><link rel="canonical" href="http://wh1720848796.github.io/post/a2eaf18b.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"NRN3QGVHM9","apiKey":"69a66e43b5218453c7420d0e818ebed9","indexName":"wh-code","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MIMIC-IV2.0解析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-15 21:21:47'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/EmiyaShirou.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友人帐</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/HatsuneMiku6.png')"><nav id="nav"><span id="blog-info"><a href="/" title="饮茶"><span class="site-name">饮茶</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友人帐</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MIMIC-IV2.0解析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-02T02:09:42.000Z" title="发表于 2023-06-02 10:09:42">2023-06-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-15T13:21:47.456Z" title="更新于 2023-06-15 21:21:47">2023-06-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span id="" data-flag-title="MIMIC-IV2.0解析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="MIMIC-IV2-0解析"><a href="#MIMIC-IV2-0解析" class="headerlink" title="MIMIC-IV2.0解析"></a>MIMIC-IV2.0解析</h1><h2 id="core"><a href="#core" class="headerlink" title="core"></a>core</h2><p>core模块包含三个表：</p>
+<h3 id="patients"><a href="#patients" class="headerlink" title="patients"></a>patients</h3><p>：患者的人口统计数据</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gender</td>
+<td>患者的性别</td>
+</tr>
+<tr>
+<td>anchor_age</td>
+<td>患者在入院时的年龄</td>
+</tr>
+<tr>
+<td>anchor_year</td>
+<td>患者在入院时的年份</td>
+</tr>
+<tr>
+<td>anchor_year_grop</td>
+<td>患者入院年份的分组  (按照年份将患者分成了5组)</td>
+</tr>
+<tr>
+<td>dod</td>
+<td>患者死亡日期，如果患者还活着，则为NULL</td>
+</tr>
+</tbody></table>
+<h3 id="admissions"><a href="#admissions" class="headerlink" title="admissions"></a>admissions</h3><p>：每次住院的记录</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者 ID，这是一个唯一的标识符，用于关联其他表中的数据。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>入院记录 ID，这是一个唯一的标识符，用于关联其他表中的数据。</td>
+</tr>
+<tr>
+<td>admittime</td>
+<td>入院时间，表示患者被接纳到医院的时间。</td>
+</tr>
+<tr>
+<td>dischtime</td>
+<td>出院时间，表示患者从医院出院的时间。</td>
+</tr>
+<tr>
+<td>deathtime</td>
+<td>死亡时间，表示患者死亡的时间。如果患者没有死亡，则该列的值为空。</td>
+</tr>
+<tr>
+<td>admission_type</td>
+<td>入院类型，表示患者被接纳到医院的方式。可能的取值包括：EMERGENCY（急诊）、ELECTIVE（择期）、NEWBORN（新生儿）等。</td>
+</tr>
+<tr>
+<td>admission_location</td>
+<td>入院地点，表示患者被接纳到医院的位置。可能的取值包括：EMERGENCY ROOM ADMIT（急诊室接诊）、TRANSFER FROM HOSPITAL（从其他医院转入）、TRANSFER FROM SKILLED NUR（从护理院转入）等。</td>
+</tr>
+<tr>
+<td>discharge_location</td>
+<td>出院地点，表示患者从医院出院的位置。可能的取值包括：HOME（回家）、DEAD/EXPIRED（死亡）、SNF（护理院）等。</td>
+</tr>
+<tr>
+<td>insurance</td>
+<td>医疗保险类型，表示患者的医疗保险类型。</td>
+</tr>
+<tr>
+<td>language</td>
+<td>语言，表示患者的语言。</td>
+</tr>
+<tr>
+<td>marital_status</td>
+<td>婚姻状态，表示患者的婚姻状态。</td>
+</tr>
+<tr>
+<td>ethnicity</td>
+<td>民族，表示患者的民族。</td>
+</tr>
+<tr>
+<td>edregtime</td>
+<td>急诊登记时间，表示患者在急诊室的登记时间。如果患者没有通过急诊室接诊，则该列的值为空。</td>
+</tr>
+<tr>
+<td>edouttime</td>
+<td>急诊出诊时间，表示患者从急诊室出诊的时间。如果患者没有通过急诊室接诊，则该列的值为空。</td>
+</tr>
+<tr>
+<td>hospital_expire_flag</td>
+<td>二进制标志，用于指示患者在医院内是否死亡。如果患者在医院内死亡，则该列的值为 1，否则为 0。该列通常用于研究医院死亡率和相关的临床结果。</td>
+</tr>
+</tbody></table>
+<h3 id="transfers"><a href="#transfers" class="headerlink" title="transfers"></a>transfers</h3><p>：住院期间每次住院的记录  （包含了患者转移和转运的信息）</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，用于关联其他表中的数据。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>入院记录的唯一标识符，用于关联其他表中的数据。</td>
+</tr>
+<tr>
+<td>transfer_id</td>
+<td>转移记录的唯一标识符，用于区分不同的转移记录。</td>
+</tr>
+<tr>
+<td>eventtype</td>
+<td>转移事件的类型，可能的取值包括：ADMIT（入院）、TRANSFER（转移）、DISCHARGE（出院）等。</td>
+</tr>
+<tr>
+<td>careunit</td>
+<td>转移时患者所在的护理单元，可能的取值包括：CCU（冠心病监护室）、MICU（医学重症监护室）、SICU（外科重症监护室）等。</td>
+</tr>
+<tr>
+<td>intime</td>
+<td>转移发生的时间，表示患者进入护理单元的时间。</td>
+</tr>
+<tr>
+<td>outtime</td>
+<td>转移结束的时间，表示患者离开护理单元的时间。</td>
+</tr>
+</tbody></table>
+<h2 id="hosp"><a href="#hosp" class="headerlink" title="hosp"></a>hosp</h2><p>Hosp 模块提供从医院范围内的电子健康记录中获取的所有数据。涵盖的信息包括患者和入院信息、实验室测量、微生物学、药物管理和计费诊断。<br>医院模块包含来自医院范围内的 EHR 的数据。这些测量值主要是在住院期间记录的，尽管一些表格也包括来自医院外的数据（例如，labevents 中的门诊实验室测试）。信息包括患者和入院详细信息（patients、admissions、transfers）、实验室测量（labevents、d_labitems）、微生物学培养（microbiologyevents）、提供者订单（poe、poe_detail）、药物管理（emar、emar_detail）、药物处方（prescriptions、pharmacy )、医院账单信息（diagnoses_icd、d_icd_diagnoses、procedures_icd、d_icd_procedures、hcpcsevents、d_hcpcs、drgcodes）和医院服务相关信息（services）。</p>
+<h3 id="admissions-1"><a href="#admissions-1" class="headerlink" title="admissions"></a>admissions</h3><p>：每次住院的记录</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>入院记录 ID，这是一个唯一的标识符，用于关联其他表中的数据。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者 ID，这是一个唯一的标识符，用于关联其他表中的数据。</td>
+</tr>
+<tr>
+<td>admittime</td>
+<td>入院时间，表示患者被接纳到医院的时间。</td>
+</tr>
+<tr>
+<td>dischtime</td>
+<td>出院时间，表示患者从医院出院的时间。</td>
+</tr>
+<tr>
+<td>deathtime</td>
+<td>死亡时间，表示患者死亡的时间。如果患者没有死亡，则该列的值为空。</td>
+</tr>
+<tr>
+<td>admission_type</td>
+<td>入院类型，表示患者被接纳到医院的方式。可能的取值包括：EMERGENCY（急诊）、ELECTIVE（择期）、NEWBORN（新生儿）等。</td>
+</tr>
+<tr>
+<td>admission_location</td>
+<td>入院地点，表示患者被接纳到医院的位置。可能的取值包括：EMERGENCY ROOM ADMIT（急诊室接诊）、TRANSFER FROM HOSPITAL（从其他医院转入）、TRANSFER FROM SKILLED NUR（从护理院转入）等。</td>
+</tr>
+<tr>
+<td>discharge_location</td>
+<td>出院地点，表示患者从医院出院的位置。可能的取值包括：HOME（回家）、DEAD/EXPIRED（死亡）、SNF（护理院）等。</td>
+</tr>
+<tr>
+<td>insurance</td>
+<td>医疗保险类型，表示患者的医疗保险类型。</td>
+</tr>
+<tr>
+<td>language</td>
+<td>语言，表示患者的语言。</td>
+</tr>
+<tr>
+<td>marital_status</td>
+<td>婚姻状态，表示患者的婚姻状态。</td>
+</tr>
+<tr>
+<td>ethnicity</td>
+<td>民族，表示患者的民族。</td>
+</tr>
+<tr>
+<td>edregtime</td>
+<td>急诊登记时间，表示患者在急诊室的登记时间。如果患者没有通过急诊室接诊，则该列的值为空。</td>
+</tr>
+<tr>
+<td>edouttime</td>
+<td>急诊出诊时间，表示患者从急诊室出诊的时间。如果患者没有通过急诊室接诊，则该列的值为空。</td>
+</tr>
+<tr>
+<td>hospital_expire_flag</td>
+<td>二进制标志，用于指示患者在医院内是否死亡。如果患者在医院内死亡，则该列的值为 1，否则为 0。该列通常用于研究医院死亡率和相关的临床结果。</td>
+</tr>
+</tbody></table>
+<h3 id="d-hcpcs"><a href="#d-hcpcs" class="headerlink" title="d_hcpcs"></a>d_hcpcs</h3><p>d_hcpcs表主要用于为hcpcsevents表中使用的代码提供可读的定义。这些概念主要对应于医院的计费，并且大多数是CPT（Current Procedural Terminology）代码。由于许可限制，不是所有的代码定义都可用。</p>
+<p>d_hcpcs表是用于存储CPT（Current Procedural Terminology）代码的参考信息，其四个列分别表示CPT代码所属的类别、代码编码、详细描述和简短描述</p>
+<table>
+<thead>
+<tr>
+<th>category</th>
+<th>该列表示CPT代码所属的类别。CPT代码是由美国医学协会（AMA）开发并维护的一套医疗服务编码标准。CPT代码根据其所代表的医疗服务的特性，被分为多个类别，例如手术、检查、治疗等</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>code</td>
+<td>该列是CPT代码的具体编码。CPT代码通常由五位数字组成，代表了一个特定的医疗服务</td>
+</tr>
+<tr>
+<td>long_description</td>
+<td>该列包含了CPT代码的详细描述。通常包括了该医疗服务的名称、功能、用途等信息，帮助医务人员理解该代码的具体含义</td>
+</tr>
+<tr>
+<td>short_description</td>
+<td>该列包含了CPT代码的简短描述。通常是该医疗服务的简称或缩写。该列的主要作用是在界面上进行展示时，能够更加简洁地呈现信息，方便医务人员快速浏览和理解</td>
+</tr>
+</tbody></table>
+<h3 id="d-icd-diagnoses"><a href="#d-icd-diagnoses" class="headerlink" title="d_icd_diagnoses"></a>d_icd_diagnoses</h3><p>ICD病情确诊词典表。d_icd_diagnoses表是国际疾病分类（International Classification of Diseases，ICD）的参考表，用于存储ICD诊断代码和说明信息</p>
+<table>
+<thead>
+<tr>
+<th>icd_version</th>
+<th>该列表示ICD诊断代码的版本号。ICD是由世界卫生组织（WHO）开发和维护的一套医学诊断分类标准，目前已经发布了多个版本。该列用于区分不同版本的ICD诊断代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>icd_code</td>
+<td>该列是ICD诊断代码的具体编码。ICD诊断代码通常由字母和数字组成，代表了一个特定的疾病或健康问题</td>
+</tr>
+<tr>
+<td>long_title</td>
+<td>全称。该列包含了ICD诊断代码的详细描述。通常包括了该疾病或健康问题的名称、病因、症状等信息，帮助医务人员理解该代码的具体含义</td>
+</tr>
+</tbody></table>
+<h3 id="d-icd-procedures"><a href="#d-icd-procedures" class="headerlink" title="d_icd_procedures"></a>d_icd_procedures</h3><p>ICD医疗过程词典表。</p>
+<p>d_icd_procedures表是国际疾病分类（International Classification of Diseases，ICD）的参考表，用于存储ICD手术代码和说明信息</p>
+<table>
+<thead>
+<tr>
+<th>icd_version</th>
+<th>该列表示ICD诊断代码的版本号。ICD是由世界卫生组织（WHO）开发和维护的一套医学诊断分类标准，目前已经发布了多个版本。该列用于区分不同版本的ICD诊断代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>icd_code</td>
+<td>该列存储医院内部手术和操作的 ICD-9-CM 编码，每个编码由三到四位数字组成，用于描述手术和操作的类型、位置和方法等</td>
+</tr>
+<tr>
+<td>long_title</td>
+<td>ICD 编码对应的手术或操作的长标题。该列存储与每个 ICD-9-CM 编码相对应的手术或操作的长标题，用于更详细地描述手术或操作的具体内容和目的</td>
+</tr>
+</tbody></table>
+<h3 id="d-labitems"><a href="#d-labitems" class="headerlink" title="d_labitems"></a>d_labitems</h3><p>门诊化验词典表。</p>
+<table>
+<thead>
+<tr>
+<th>itemid</th>
+<th>该列是检验项目的唯一标识符。每个检验项目都有一个唯一的itemid</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>label</td>
+<td>该列是检验项目的名称或标签。它通常是医学术语或缩写，用于描述检验项目的类型和特征</td>
+</tr>
+<tr>
+<td>fluid</td>
+<td>该列表示检验项目的样本类型或检测液体类型。例如，血液、尿液、脑脊液等。测量的物质 ‘blood’ ‘urine’</td>
+</tr>
+<tr>
+<td>category</td>
+<td>该列是检验项目的类别。检验项目根据其功能和测试类型被分为多个类别，例如血液生化、免疫学、微生物学等</td>
+</tr>
+</tbody></table>
+<h3 id="diagnoses-icd"><a href="#diagnoses-icd" class="headerlink" title="diagnoses_icd"></a>diagnoses_icd</h3><p>diagnoses_icd表是一个诊断编码表，用于存储患者的<strong>诊断信息</strong>。每个记录表示患者在一次住院期间的一个诊断结果，包括诊断编码、诊断编码的版本号、诊断编码的顺序号等信息。该表中的诊断编码采用ICD-9-CM或ICD-10-CM编码标准，ICD-9-CM编码标准用于描述1998年到2015年期间的诊断结果，ICD-10-CM编码标准用于描述2015年以后的诊断结果。</p>
+<p>该表的主要作用是为研究人员提供患者的诊断信息，帮助他们了解患者的病情和治疗过程，并进行相关的研究分析。例如，可以使用该表来分析患者的疾病类型、疾病的发展趋势、疾病之间的关联性等，为临床医生提供更好的诊治建议和指导。</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，与patients表中的subject_id列相对应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>住院就诊的唯一标识符，与admissions表中的hadm_id列相对应</td>
+</tr>
+<tr>
+<td>seq_num</td>
+<td>诊断编码的顺序号，表示该诊断的顺序。例如，seq_num = 1 表示该诊断是主要诊断，seq_num = 2 表示该诊断是次要诊断，以此类推</td>
+</tr>
+<tr>
+<td>icd_version</td>
+<td>诊断编码的版本号，表示使用的诊断编码标准。在MIMIC-IV数据库中，icd_version列的值为9或10，分别表示使用ICD-9-CM和ICD-10-CM诊断编码标准</td>
+</tr>
+<tr>
+<td>icd_code</td>
+<td>诊断编码，表示患者的诊断结果，使用ICD-9-CM或ICD-10-CM编码标准编码</td>
+</tr>
+</tbody></table>
+<h3 id="drgcodes"><a href="#drgcodes" class="headerlink" title="drgcodes"></a>drgcodes</h3><p>诊断相关组编码表</p>
+<p>drgcodes表是用于存储诊断相关分组（Diagnosis-Related Group，DRG）代码和信息的参考表。该表的主要作用是帮助医务人员理解和使用DRG分类系统，从而更好地进行医疗诊断和治疗，并且这些代码也被用于医院的付款和统计分析</p>
+<table>
+<thead>
+<tr>
+<th>hadm_id</th>
+<th>该列是患者住院的唯一标识符，用于与其他表格中的数据关联</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>drg_severity</td>
+<td>该列表示DRG的严重程度。DRG是一种将医疗服务组织成一组可比较的疾病类别的分类系统，用于确定医院的付款和统计分析。DRG根据患者的诊断、治疗和其他相关因素进行分类，每个DRG都有一个严重程度</td>
+</tr>
+<tr>
+<td>drg_mortality</td>
+<td>该列表示DRG的死亡率。DRG的死亡率是指在某个DRG中的患者在住院期间内死亡的比例</td>
+</tr>
+<tr>
+<td>subject_id</td>
+<td>该列是患者的唯一标识符，用于与其他表格中的数据关联</td>
+</tr>
+<tr>
+<td>drg_code</td>
+<td>该列是DRG的编码，用于标识DRG</td>
+</tr>
+<tr>
+<td>drg_type</td>
+<td>该列是DRG的类型。DRG根据医学服务的类型和性质进行分类，例如手术DRG、医学DRG等</td>
+</tr>
+<tr>
+<td>description</td>
+<td>该列包含了DRG的详细说明。通常包括了该DRG的诊断和治疗特点、组成要素、支付标准等信息，帮助医务人员理解该DRG的具体含义</td>
+</tr>
+</tbody></table>
+<h3 id="emar"><a href="#emar" class="headerlink" title="emar"></a>emar</h3><table>
+<thead>
+<tr>
+<th>storetime</th>
+<th>该列是记录的时间戳，即EMAR记录存储在数据库中的时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>该列是患者住院的唯一标识符，用于与其他表格中的数据关联</td>
+</tr>
+<tr>
+<td>pharmacy_id</td>
+<td>该列是药房的唯一标识符，用于与药房信息表格中的数据关联</td>
+</tr>
+<tr>
+<td>charttime</td>
+<td>该列是护士记录给药的时间，通常在给药前或给药后记录</td>
+</tr>
+<tr>
+<td>scheduletime</td>
+<td>该列是药物计划的时间，即该药物应该在何时给予患者</td>
+</tr>
+<tr>
+<td>subject_id</td>
+<td>该列是患者的唯一标识符，用于与其他表格中的数据关联</td>
+</tr>
+<tr>
+<td>emar_seq</td>
+<td>该列是EMAR记录的序列号，用于标识不同的EMAR记录</td>
+</tr>
+<tr>
+<td>emar_id</td>
+<td>该列是EMAR记录的唯一标识符，与其他EMAR记录相关联</td>
+</tr>
+<tr>
+<td>event_txt</td>
+<td>该列包含了EMAR事件的详细描述，例如药物名称、剂量、途径等信息</td>
+</tr>
+<tr>
+<td>poe_id</td>
+<td>该列是医嘱的唯一标识符，用于与医嘱信息表格中的数据关联</td>
+</tr>
+<tr>
+<td>medication</td>
+<td>该列包含了药物的详细信息，例如药物名称、剂量、途径等信息</td>
+</tr>
+</tbody></table>
+<h3 id="emar-detail"><a href="#emar-detail" class="headerlink" title="emar_detail"></a>emar_detail</h3><table>
+<thead>
+<tr>
+<th>pharmacy_id</th>
+<th>该列是药房的唯一标识符，用于与药房信息表格中的数据关联</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>parent_field_ordinal</td>
+<td>该列是EMAR记录的上级序列号，用于标识EMAR记录的层级关系</td>
+</tr>
+<tr>
+<td>emar_seq</td>
+<td>该列是EMAR记录的序列号，用于标识不同的EMAR记录</td>
+</tr>
+<tr>
+<td>subject_id</td>
+<td>该列是患者的唯一标识符，用于与其他表格中的数据关联</td>
+</tr>
+<tr>
+<td>reason_for_no_barcode</td>
+<td>如果药物没有条形码，则该列包含药物未被扫描的原因</td>
+</tr>
+<tr>
+<td>complete_dose_not_given</td>
+<td>该列表示是否完全给药，如果没有完全给药，则为True</td>
+</tr>
+<tr>
+<td>dose_due</td>
+<td>该列是应该给予患者的药物剂量</td>
+</tr>
+<tr>
+<td>dose_due_unit</td>
+<td>该列是药物剂量的单位</td>
+</tr>
+<tr>
+<td>dose_given</td>
+<td>该列是实际给予患者的药物剂量</td>
+</tr>
+<tr>
+<td>dose_given_unit</td>
+<td>该列是给予药物的剂量单位</td>
+</tr>
+<tr>
+<td>will_remainder_of_dose_be_given</td>
+<td>该列表示是否会继续给予剩余的药物剂量</td>
+</tr>
+<tr>
+<td>product_amount_given</td>
+<td>该列是给予患者的药物的数量</td>
+</tr>
+<tr>
+<td>product_unit</td>
+<td>该列是给予患者的药物的数量单位</td>
+</tr>
+<tr>
+<td>product_code</td>
+<td>该列是药品的编码</td>
+</tr>
+<tr>
+<td>product_description</td>
+<td>该列是药品的描述</td>
+</tr>
+<tr>
+<td>product_description_other</td>
+<td>该列是药品的其他描述</td>
+</tr>
+<tr>
+<td>prior_infusion_rate</td>
+<td>该列是之前的输液速率</td>
+</tr>
+<tr>
+<td>infusion_rate</td>
+<td>该列是当前的输液速率</td>
+</tr>
+<tr>
+<td>infusion_rate_adjustment</td>
+<td>该列是输液速率的调整，例如加速或减速</td>
+</tr>
+<tr>
+<td>infusion_rate_adjustment_amount</td>
+<td>该列是输液速率调整的数量</td>
+</tr>
+<tr>
+<td>infusion_rate_unit</td>
+<td>该列是输液速率的单位</td>
+</tr>
+<tr>
+<td>route</td>
+<td>该列是药物给予的途径，例如口服、静脉注射等</td>
+</tr>
+<tr>
+<td>infusion_complete</td>
+<td>该列表示输液是否完成</td>
+</tr>
+<tr>
+<td>completion_interval</td>
+<td>该列是完成输液所需的时间</td>
+</tr>
+<tr>
+<td>new_iv_bag_hung</td>
+<td>该列表示是否需要更换输液袋</td>
+</tr>
+<tr>
+<td>continued_infusion_in_other_location</td>
+<td>该列表示输液是否在其他地方继续进行</td>
+</tr>
+<tr>
+<td>restart_interval</td>
+<td>该列是重新开始输液所需的时间间隔</td>
+</tr>
+<tr>
+<td>side</td>
+<td>该列表示药物给予的侧面，例如左侧或右侧</td>
+</tr>
+<tr>
+<td>site</td>
+<td>该列是药物给予的部位</td>
+</tr>
+<tr>
+<td>non_formulary_visual_verification</td>
+<td>该列表示药品是否需要视觉确认</td>
+</tr>
+<tr>
+<td>emar_id</td>
+<td>该列是EMAR记录的唯一标识符，与其他EMAR记录相关联</td>
+</tr>
+<tr>
+<td>administration_type</td>
+<td>该列是药物给予的方式，例如口服、注射等</td>
+</tr>
+<tr>
+<td>barcode_type</td>
+<td>该列是药物条形码的类型</td>
+</tr>
+</tbody></table>
+<h3 id="hcpcsevents"><a href="#hcpcsevents" class="headerlink" title="hcpcsevents"></a>hcpcsevents</h3><p>住院期间发生的计费事件。包括 CPT 代码。<br>hcpc事件 在MIMIC-IV数据库中，hcpcsevents表是用于存储医院常用过程及编码系统（Healthcare Common Procedure Coding System，HCPCS）事件的参考表，包含了患者接受<code>医疗过程</code>的相关信息</p>
+<ol>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“hadm_id”：该列是患者住院的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“chartdate”：该列是医疗过程发生的日期和时间。</li>
+<li>“seq_num”：该列是医疗过程发生的序列号，用于标识不同的医疗过程。</li>
+<li>“hcpcs_cd”：该列是医疗过程的编码（CPT），用于标识医疗过程的类型。</li>
+<li>“short_description”：该列是医疗过程的简短描述，通常是对医疗过程编码的解释。</li>
+</ol>
+<h3 id="labevents"><a href="#labevents" class="headerlink" title="labevents"></a>labevents</h3><p>labevents表是用于存储患者实验室检查结果的参考表。该表包含了患者实验室检查的各种结果，例如血液、尿液、呼吸道分泌物等</p>
+<ol>
+<li>“labevent_id”：该列是实验室检查结果的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“hadm_id”：该列是患者住院的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“itemid”：该列是实验室检查的项目ID，用于标识实验室检查的类型。</li>
+<li>“charttime”：该列是实验室检查结果记录的时间。</li>
+<li>“storetime”：该列是实验室检查结果存储的时间。</li>
+<li>“value”：该列是实验室检查结果的值，例如血液检查的白细胞计数、尿液检查的蛋白质含量等。</li>
+<li>“valuenum”：该列是实验室检查结果的值的数值表示，通常与”valueuom”列一起使用。</li>
+<li>“valueuom”：该列是实验室检查结果的值的单位，例如血液检查的白细胞计数的单位为每立方毫米（/mm3）。</li>
+<li>“flag”：该列是实验室检查结果的标志，用于指示实验室检查结果是否异常或需要进一步处理。</li>
+<li>“reference_range”：该列是实验室检查结果的参考范围，通常与”value”列一起使用，用于指示实验室检查结果是否正常。包含了”ref_range_lower”和”ref_range_upper”两列，分别表示参考范围的下限和上限。</li>
+<li>“specimen_id”：该列是实验室检查的标本ID，例如血液、尿液等。</li>
+<li>“comments”：该列是实验室检查结果的注释，例如实验室技术员的注释或者医生的备注。</li>
+<li>“priority”：该列是实验室检查的优先级，例如“紧急”或“常规”。</li>
+</ol>
+<h3 id="microbiologyevents"><a href="#microbiologyevents" class="headerlink" title="microbiologyevents"></a>microbiologyevents</h3><p>d_icd_diagnoses表是国际疾病分类（International Classification of Diseases，ICD）的参考表，用于存储ICD诊断代码和说明信息</p>
+<ol>
+<li>“microevent_id”：该列是微生物检查结果的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“hadm_id”：该列是患者住院的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“chartdate”：该列是微生物检查结果记录的日期。</li>
+<li>“charttime”：该列是微生物检查结果记录的时间。</li>
+<li>“storedate”：该列是微生物检查结果存储的日期。</li>
+<li>“storetime”：该列是微生物检查结果存储的时间。</li>
+<li>“spec_type_desc”：该列是微生物检查的标本类型描述，例如血液、尿液等。</li>
+<li>“micro_specimen_id”：该列是微生物检查的标本ID，用于标识不同的微生物检查结果。</li>
+<li>“test_name”：该列是微生物检查的测试名称，例如培养、鉴定等。</li>
+<li>“org_name”：该列是微生物检查结果中检测到的微生物名称，例如细菌、真菌、病毒等。</li>
+<li>“ab_name”：该列是微生物检查结果中检测到的抗生素名称。</li>
+<li>“quantity”：该列是微生物检查结果中检测到的微生物数量，例如细菌数量。</li>
+<li>“dilution_value”：该列是微生物检查结果中使用的稀释值。</li>
+<li>“dilution_text”：该列是微生物检查结果中使用的稀释值的文本表示。</li>
+<li>“dilution_comparison”：该列是微生物检查结果中使用的稀释值与参考值的比较结果。</li>
+<li>“interpretation”：该列是微生物检查结果的解释，例如微生物敏感性、抗生素疗效等。</li>
+<li>“spec_itemid”：该列是微生物检查的标本ID，用于标识不同的微生物检查结果。</li>
+<li>“test_itemid”：该列是微生物检查的测试ID，用于标识不同的微生物检查测试。</li>
+<li>“ab_itemid”：该列是微生物检查的抗生素ID，用于标识不同的微生物检查结果中的抗生素。</li>
+<li>“isolate_num”：该列是微生物检查结果中检测到的微生物序列号。</li>
+<li>“test_seq”：该列是微生物检查结果中检测到的微生物测试序列号。</li>
+<li>“comments”：该列是微生物检查结果的注释，例如实验室技术员的注释或者医生的备注。</li>
+</ol>
+<h3 id="omr"><a href="#omr" class="headerlink" title="omr"></a>omr</h3><p>omr表是用于记录患者口腔护理的参考表。该表包含了患者口腔护理的各种结果，例如口腔清洁程度、口腔感染情况等</p>
+<ol>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“chartdate”：该列是口腔护理记录的日期。</li>
+<li>“seq_num”：该列是口腔护理结果的序列号，用于标识不同的口腔护理结果。</li>
+<li>“result_name”：该列是口腔护理结果的名称，例如口腔清洁程度、龈炎情况等。</li>
+<li>“result_value”：该列是口腔护理结果的值，例如口腔清洁程度得分、龈炎程度等。</li>
+</ol>
+<h3 id="patients-1"><a href="#patients-1" class="headerlink" title="patients"></a>patients</h3><p>：患者的人口统计数据</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gender</td>
+<td>患者的性别</td>
+</tr>
+<tr>
+<td>anchor_age</td>
+<td>患者在入院时的年龄</td>
+</tr>
+<tr>
+<td>anchor_year</td>
+<td>患者在入院时的年份</td>
+</tr>
+<tr>
+<td>anchor_year_grop</td>
+<td>患者入院年份的分组  (按照年份将患者分成了5组)</td>
+</tr>
+<tr>
+<td>dod</td>
+<td>患者死亡日期，如果患者还活着，则为NULL</td>
+</tr>
+</tbody></table>
+<h3 id="pharmacy"><a href="#pharmacy" class="headerlink" title="pharmacy"></a>pharmacy</h3><p>pharmacy表是用于存储患者药物治疗相关信息的参考表。该表包含了患者接受药物治疗过程中的各种信息，例如药物名称、药物剂量、给药途径、给药频率、开始时间和结束时间等</p>
+<ol>
+<li>“entertime”：该列是记录药物治疗信息的录入时间。</li>
+<li>“verifiedtime”：该列是药物治疗信息的审核时间。</li>
+<li>“basal_rate”：该列是药物治疗中基础剂量的速率。</li>
+<li>“stoptime”：该列是药物治疗的停止时间。</li>
+<li>“doses_per_24_hrs”：该列是每日给药次数。</li>
+<li>“duration”：该列是药物治疗的持续时间。</li>
+<li>“pharmacy_id”：该列是药物治疗信息的唯一标识符。</li>
+<li>“expiration_value”：该列是药物的有效期。</li>
+<li>“hadm_id”：该列是患者的入院记录标识符，用于与其他表格中的数据关联。</li>
+<li>“expirationdate”：该列是药物的过期日期。</li>
+<li>“starttime”：该列是药物治疗的开始时间。</li>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“duration_interval”：该列是药物治疗的持续时间间隔。</li>
+<li>“expiration_unit”：该列是药物有效期的单位。</li>
+<li>“dispensation”：该列是药物的配药信息。</li>
+<li>“fill_quantity”：该列是药物配药的数量。</li>
+<li>“poe_id”：该列是医嘱的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“medication”：该列是药物的名称。</li>
+<li>“proc_type”：该列是药物治疗的类型，例如注射、口服等。</li>
+<li>“status”：该列是药物治疗的状态，例如已审核、未审核等。</li>
+<li>“route”：该列是药物给药的途径，例如口服、静脉注射等。</li>
+<li>“frequency”：该列是药物给药的频率。</li>
+<li>“disp_sched”：该列是药物配药的时间表。</li>
+<li>“infusion_type”：该列是药物给药的类型，例如静脉注射、持续泵等。</li>
+<li>“sliding_scale”：该列是药物给药的滑动比例。</li>
+<li>“lockout_interval”：该列是药物给药的锁定间隔。</li>
+<li>“one_hr_max”：该列是药物给药的最大剂量。</li>
+</ol>
+<h3 id="poe"><a href="#poe" class="headerlink" title="poe"></a>poe</h3><p>poe表是用于存储患者医嘱信息的参考表。该表包含了患者医嘱的各种信息，例如医嘱类型、医嘱状态、医嘱开始时间和结束时间等</p>
+<ol>
+<li>“hadm_id”：该列是患者的入院记录标识符，用于与其他表格中的数据关联。</li>
+<li>“ordertime”：该列是医嘱的开立时间。</li>
+<li>“poe_seq”：该列是医嘱的序列号，用于标识不同的医嘱。</li>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“discontinue_of_poe_id”：该列是被撤销医嘱的唯一标识符。</li>
+<li>“discontinued_by_poe_id”：该列是撤销医嘱的唯一标识符。</li>
+<li>“poe_id”：该列是医嘱的唯一标识符。</li>
+<li>“order_status”：该列是医嘱的状态，例如已审核、未审核等。</li>
+<li>“order_type”：该列是医嘱的类型，例如药物治疗、手术等。</li>
+<li>“order_subtype”：该列是医嘱的子类型，例如药物治疗中的口服药物、静脉注射药物等。</li>
+<li>“transaction_type”：该列是医嘱操作的类型，例如创建、修改、撤销等。</li>
+</ol>
+<h3 id="poe-detail"><a href="#poe-detail" class="headerlink" title="poe_detail"></a>poe_detail</h3><ol>
+<li>“poe_seq”：该列是医嘱的序列号，用于标识不同的医嘱。</li>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“poe_id”：该列是医嘱的唯一标识符。</li>
+<li>“field_name”：该列是医嘱详细信息的名称，例如药物剂量、给药途径、给药频率等。</li>
+<li>“field_value”：该列是医嘱详细信息的值，例如药物剂量的具体数值、给药途径的具体名称等。</li>
+</ol>
+<h3 id="prescriptions"><a href="#prescriptions" class="headerlink" title="prescriptions"></a>prescriptions</h3><p>prescriptions表是用于存储患者<strong>处方药物信息</strong>的参考表。该表包括了患者接受处方药物治疗的各种信息，例如药物名称、药物剂量、给药途径、给药频率、开始时间和结束时间等。该表中的一些重要列的含义如下</p>
+<ol>
+<li>“hadm_id”：该列是患者的入院记录标识符，用于与其他表格中的数据关联。</li>
+<li>“poe_seq”：该列是医嘱的序列号，用于标识不同的医嘱。</li>
+<li>“starttime”：该列是药物治疗的开始时间。</li>
+<li>“stoptime”：该列是药物治疗的停止时间。</li>
+<li>“pharmacy_id”：该列是药物治疗信息的唯一标识符。</li>
+<li>“doses_per_24_hrs”：该列是每日给药次数。</li>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“prod_strength”：该列是药物剂量的强度。</li>
+<li>“form_rx”：该列是药物剂型的名称，例如片剂、胶囊等。</li>
+<li>“dose_val_rx”：该列是药物剂量的具体数值。</li>
+<li>“dose_unit_rx”：该列是药物剂量的单位，例如毫克、克等。</li>
+<li>“form_val_disp”：该列是药物剂型的具体数值。</li>
+<li>“form_unit_disp”：该列是药物剂型的单位。</li>
+<li>“route”：该列是药物给药的途径，例如口服、静脉注射等。</li>
+<li>“poe_id”：该列是医嘱的唯一标识符。</li>
+<li>“drug_type”：该列是药物类型，例如化学药品、生物制品等。</li>
+<li>“drug”：该列是药物的通用名称。</li>
+<li>“formulary_drug_cd”：该列是药物的处方代码。</li>
+<li>“gsn”：该列是药物的全球唯一标识符。</li>
+<li>“ndc”：该列是药物的国家药品编码。</li>
+</ol>
+<h3 id="procedures-icd"><a href="#procedures-icd" class="headerlink" title="procedures_icd"></a>procedures_icd</h3><p>procedures_icd表是用于存储患者实施过的医疗过程的参考表。该表包括了患者接受的各种医疗过程的ICD编码信息，例如手术、检查等</p>
+<ol>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“hadm_id”：该列是患者的入院记录标识符，用于与其他表格中的数据关联。</li>
+<li>“seq_num”：该列是医疗过程的序列号，用于标识不同的医疗过程。</li>
+<li>“chartdate”：该列是医疗过程记录的日期。</li>
+<li>“icd_version”：该列是ICD编码的版本，例如ICD-9、ICD-10等。</li>
+<li>“icd_code”：该列是医疗过程的ICD编码。</li>
+</ol>
+<h3 id="services"><a href="#services" class="headerlink" title="services"></a>services</h3><ol>
+<li>“subject_id”：该列是患者的唯一标识符，用于与其他表格中的数据关联。</li>
+<li>“hadm_id”：该列是患者的入院记录标识符，用于与其他表格中的数据关联。</li>
+<li>“transfertime”：该列是医疗服务的时间。</li>
+<li>“prev_service”：该列是医疗服务之前的服务类型。</li>
+<li>“curr_service”：该列是医疗服务的服务类型。</li>
+</ol>
+<h2 id="icu"><a href="#icu" class="headerlink" title="icu"></a>icu</h2><p>ICU 模块包含从 ICU 内使用的临床信息系统收集的信息。记录的数据包括静脉给药、呼吸机设置和其他图表项目。<br>ICU 模块包含来自 BIDMC 临床信息系统的数据：MetaVision (iMDSoft)。MetaVision 表被非规范化以创建星型模式，其中 icustays 和 d_items 表链接到一组数据表，所有表都以“事件”为后缀。icu 模块中记录的数据包括静脉和液体输入 (inputevents)、上述输入的成分 (ingredientevents)、患者输出 (outputevents)、程序 (procedureevents)、记录为日期或时间的信息 (datetimeevents) 以及其他图表信息（图表事件）。所有事件表都包含一个 stay_id 列，允许识别 icustays 中相关的 ICU 患者，以及一个 itemid 列，允许识别 d_items 中记录的概念。</p>
+<h3 id="chartevents"><a href="#chartevents" class="headerlink" title="chartevents"></a>chartevents</h3><p>：患者在 ICU 的护理记录信息，包括<strong>生命体征</strong>、病情观察、医疗措施等</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，对应于 ICU 模块中的 admissions 和 patients 表中的 <code>subject_id</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者在 ICU 中的入院号，对应于 ICU 模块中的 admissions 表中的 <code>hadm_id</code>。</td>
+</tr>
+<tr>
+<td>stay_id</td>
+<td>患者在 ICU 中的住院号，对应于 ICU 模块中的 admissions 表中的 <code>stay_id</code>。</td>
+</tr>
+<tr>
+<td>charttime</td>
+<td>护理记录的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>storetime</td>
+<td>护理记录存储的时间，格式为 yyyy-mm-dd hh:mm:ss。</td>
+</tr>
+<tr>
+<td>itemid</td>
+<td>护理项目的唯一标识符，对应于 D_ITEMS 表中的 <code>itemid</code>，可以用于查询该项目的描述信息</td>
+</tr>
+<tr>
+<td>value</td>
+<td>护理记录的值，可以是数字、文本或者其他格式</td>
+</tr>
+<tr>
+<td>valuenum</td>
+<td>护理记录的数值型值，如果 <code>value</code> 列的值是数值型的，则该列会存储数值型的值，否则为 NULL</td>
+</tr>
+<tr>
+<td>valueuom</td>
+<td>护理记录的单位，描述 <code>value</code> 列的单位</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>护理记录是否有警告信息，如果有警告信息则为 1，否则为 0</td>
+</tr>
+</tbody></table>
+<h3 id="d-items"><a href="#d-items" class="headerlink" title="d_items"></a>d_items</h3><p>：包含了 ICU 中的所有测量指标、药品、手术等项目的元数据信息</p>
+<table>
+<thead>
+<tr>
+<th>itemid</th>
+<th>项目的唯一标识符，用于在其他表中引用该项目</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>label</td>
+<td>项目的标签，描述该项目的名称和测量单位</td>
+</tr>
+<tr>
+<td>abbreviation</td>
+<td>项目的缩写，常用于在图表和报告中显示</td>
+</tr>
+<tr>
+<td>linksto</td>
+<td>该项目与其他表的关联信息，描述该项目在其他表中的引用方式</td>
+</tr>
+<tr>
+<td>category</td>
+<td>项目的类别，用于对不同类型的项目进行分类</td>
+</tr>
+<tr>
+<td>unitname</td>
+<td>项目的测量单位名称，描述该项目的测量单位</td>
+</tr>
+<tr>
+<td>param_type</td>
+<td>项目的参数类型，描述该项目的参数类型</td>
+</tr>
+<tr>
+<td>lownormalvalue</td>
+<td>项目的正常最低值，描述该项目的正常最低值范围</td>
+</tr>
+<tr>
+<td>highnormalvalue</td>
+<td>项目的正常最高值，描述该项目的正常最高值范围</td>
+</tr>
+</tbody></table>
+<h3 id="datetimeevents"><a href="#datetimeevents" class="headerlink" title="datetimeevents"></a>datetimeevents</h3><p>：包含了 ICU 中的一些时间相关的事件的记录信息</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，对应于 ICU 模块中的 admissions 和 patients 表中的 <code>subject_id</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者在 ICU 中的入院号，对应于 ICU 模块中的 admissions 表中的 <code>hadm_id</code></td>
+</tr>
+<tr>
+<td>stay_id</td>
+<td>患者在 ICU 中的住院号，对应于 ICU 模块中的 admissions 表中的 <code>stay_id</code></td>
+</tr>
+<tr>
+<td>charttime</td>
+<td>事件发生的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>storetime</td>
+<td>事件存储的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>itemid</td>
+<td>事件的唯一标识符，对应于 D_ITEMS 表中的 <code>itemid</code>，可以用于查询该事件的描述信息</td>
+</tr>
+<tr>
+<td>value</td>
+<td>事件的值，可以是数字、文本或者其他格式</td>
+</tr>
+<tr>
+<td>valueuom</td>
+<td>事件的单位，描述 <code>value</code> 列的单位</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>事件是否有警告信息，如果有警告信息则为 1，否则为 0</td>
+</tr>
+</tbody></table>
+<h3 id="icustays"><a href="#icustays" class="headerlink" title="icustays"></a>icustays</h3><p>：包含了 ICU 中每个患者的住院记录信息</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，对应于 ICU 模块中的 admissions 和 patients 表中的 <code>subject_id</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者在 ICU 中的入院号，对应于 ICU 模块中的 admissions 表中的 <code>hadm_id</code></td>
+</tr>
+<tr>
+<td>stay_id</td>
+<td>患者在 ICU 中的住院号，用于区分不同的 ICU 住院记录</td>
+</tr>
+<tr>
+<td>first_careunit</td>
+<td>患者进入 ICU 后的第一个护理单元，记录该 ICU 住院记录的开始</td>
+</tr>
+<tr>
+<td>last_careunit</td>
+<td>患者最后一个护理单元，记录该 ICU 住院记录的结束</td>
+</tr>
+<tr>
+<td>intime</td>
+<td>患者进入 ICU 的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>outtime</td>
+<td>患者离开 ICU 的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>los</td>
+<td>患者在 ICU 中的住院时间，以小时为单位</td>
+</tr>
+</tbody></table>
+<h3 id="inputevents"><a href="#inputevents" class="headerlink" title="inputevents"></a>inputevents</h3><p>包含了 ICU 中患者的药品、液体和营养剂等输入信息</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，对应于 ICU 模块中的 admissions 和 patients 表中的 <code>subject_id</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者在 ICU 中的入院号，对应于 ICU 模块中的 admissions 表中的 <code>hadm_id</code></td>
+</tr>
+<tr>
+<td>stay_id</td>
+<td>患者在 ICU 中的住院号，用于区分不同的 ICU 住院记录</td>
+</tr>
+<tr>
+<td>starttime</td>
+<td>输入事件开始时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>endtime</td>
+<td>输入事件结束时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>storetime</td>
+<td>输入事件记录的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>itemid</td>
+<td>输入项目的唯一标识符，对应于 D_ITEMS 表中的 <code>itemid</code>，可以用于查询该项目的描述信息</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>输入项目的数量</td>
+</tr>
+<tr>
+<td>amountuom</td>
+<td>输入项目的数量单位，描述 <code>amount</code> 列的单位</td>
+</tr>
+<tr>
+<td>rate</td>
+<td>输入项目的速率</td>
+</tr>
+<tr>
+<td>rateuom</td>
+<td>输入项目的速率单位，描述 <code>rate</code> 列的单位</td>
+</tr>
+<tr>
+<td>orderid</td>
+<td>输入项目的订单编号</td>
+</tr>
+<tr>
+<td>linkorderid</td>
+<td>输入项目关联的订单编号</td>
+</tr>
+<tr>
+<td>ordercategoryname</td>
+<td>订单的类别名称</td>
+</tr>
+<tr>
+<td>secondaryordercategoryname</td>
+<td>次要订单的类别名称</td>
+</tr>
+<tr>
+<td>ordercomponenttypedescription</td>
+<td>订单组成类型的描述信息</td>
+</tr>
+<tr>
+<td>ordercategorydescription</td>
+<td>订单类别的描述信息</td>
+</tr>
+<tr>
+<td>patientweight</td>
+<td>患者的体重</td>
+</tr>
+<tr>
+<td>totalamount</td>
+<td>输入项目的总数量</td>
+</tr>
+<tr>
+<td>totalamountuom</td>
+<td>输入项目的总数量单位，描述 <code>totalamount</code> 列的单位</td>
+</tr>
+<tr>
+<td>isopenbag</td>
+<td>输入项目是否为开袋状态，如果是则为 1，否则为 0</td>
+</tr>
+<tr>
+<td>continueinnextdept</td>
+<td>输入项目是否需要在下一个部门中继续，如果是则为 1，否则为 0</td>
+</tr>
+<tr>
+<td>cancelreason</td>
+<td>输入项目取消的原因</td>
+</tr>
+<tr>
+<td>statusdescription</td>
+<td>输入项目的状态描述</td>
+</tr>
+<tr>
+<td>originalamount</td>
+<td>原始输入项目的数量</td>
+</tr>
+<tr>
+<td>originalrate</td>
+<td>原始输入项目的速率</td>
+</tr>
+</tbody></table>
+<h3 id="outputevents"><a href="#outputevents" class="headerlink" title="outputevents"></a>outputevents</h3><p>包含了 ICU 中患者的尿液、排泄物和引流液等输出信息</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，对应于 ICU 模块中的 admissions 和 patients 表中的 <code>subject_id</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者在 ICU 中的入院号，对应于 ICU 模块中的 admissions 表中的 <code>hadm_id</code></td>
+</tr>
+<tr>
+<td>stay_id</td>
+<td>患者在 ICU 中的住院号，用于区分不同的 ICU 住院记录</td>
+</tr>
+<tr>
+<td>charttime</td>
+<td>事件发生的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>storetime</td>
+<td>事件存储的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>itemid</td>
+<td>事件的唯一标识符，对应于 D_ITEMS 表中的 <code>itemid</code>，可以用于查询该事件的描述信息</td>
+</tr>
+<tr>
+<td>value</td>
+<td>事件的值，可以是数字、文本或者其他格式</td>
+</tr>
+<tr>
+<td>valueuom</td>
+<td>事件的单位，描述 <code>value</code> 列的单位</td>
+</tr>
+</tbody></table>
+<h3 id="procedureevents"><a href="#procedureevents" class="headerlink" title="procedureevents"></a>procedureevents</h3><p><strong>医疗过程事件表</strong></p>
+<p>包含了 ICU 中患者的各种手术、治疗和检查等操作信息</p>
+<table>
+<thead>
+<tr>
+<th>subject_id</th>
+<th>患者的唯一标识符，对应于 ICU 模块中的 admissions 和 patients 表中的 <code>subject_id</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadm_id</td>
+<td>患者在 ICU 中的入院号，对应于 ICU 模块中的 admissions 表中的 <code>hadm_id</code></td>
+</tr>
+<tr>
+<td>stay_id</td>
+<td>患者在 ICU 中的住院号，用于区分不同的 ICU 住院记录</td>
+</tr>
+<tr>
+<td>starttime</td>
+<td>事件开始时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>endtime</td>
+<td>事件结束时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>storetime</td>
+<td>事件记录的时间，格式为 yyyy-mm-dd hh:mm:ss</td>
+</tr>
+<tr>
+<td>itemid</td>
+<td>事件的唯一标识符，对应于 D_ITEMS 表中的 <code>itemid</code>，可以用于查询该事件的描述信息</td>
+</tr>
+<tr>
+<td>value</td>
+<td>事件的值，可以是数字、文本或者其他格式</td>
+</tr>
+<tr>
+<td>valueuom</td>
+<td>事件的单位，描述 <code>value</code> 列的单位</td>
+</tr>
+<tr>
+<td>location</td>
+<td>事件发生的位置</td>
+</tr>
+<tr>
+<td>locationcategory</td>
+<td>位置的类别</td>
+</tr>
+<tr>
+<td>orderid</td>
+<td>事件的订单编号</td>
+</tr>
+<tr>
+<td>linkorderid</td>
+<td>事件关联的订单编号</td>
+</tr>
+<tr>
+<td>ordercategoryname</td>
+<td>订单的类别名称</td>
+</tr>
+<tr>
+<td>secondaryordercategoryname</td>
+<td>次要订单的类别名称</td>
+</tr>
+<tr>
+<td>ordercategorydescription</td>
+<td>订单类别的描述信息</td>
+</tr>
+<tr>
+<td>patientweight</td>
+<td>患者的体重</td>
+</tr>
+<tr>
+<td>totalamount</td>
+<td>事件的总数量</td>
+</tr>
+<tr>
+<td>totalamountuom</td>
+<td>事件的总数量单位，描述 <code>totalamount</code> 列的单位</td>
+</tr>
+<tr>
+<td>isopenbag</td>
+<td>事件是否为开袋状态，如果是则为 1，否则为 0</td>
+</tr>
+<tr>
+<td>continueinnextdept</td>
+<td>事件是否需要在下一个部门中继续，如果是则为 1，否则为 0</td>
+</tr>
+<tr>
+<td>cancelreason</td>
+<td>事件取消的原因</td>
+</tr>
+<tr>
+<td>statusdescription</td>
+<td>事件的状态描述</td>
+</tr>
+<tr>
+<td>comments_date</td>
+<td>事件的评论日期</td>
+</tr>
+<tr>
+<td>originalamount</td>
+<td>原始事件的数量</td>
+</tr>
+<tr>
+<td>originalrate</td>
+<td>原始事件的速率</td>
+</tr>
+</tbody></table>
+<h1 id="MIMIC2-2新增"><a href="#MIMIC2-2新增" class="headerlink" title="MIMIC2.2新增"></a>MIMIC2.2新增</h1><h2 id="ed"><a href="#ed" class="headerlink" title="ed"></a>ed</h2><p>ED 模块包含<strong>急诊科患者</strong>在 ED 时收集的数据。 信息包括入院原因、分类评估、生命体征和药物调和。 subject_id 和 hadm_id 标识符允许 MIMIC-IV-ED 链接到其他 MIMIC-IV 模块。</p>
+<h3 id="diagnosis"><a href="#diagnosis" class="headerlink" title="diagnosis"></a>diagnosis</h3><ul>
+<li><p>“subject_id”: 这是一个唯一标识符，用于表示在MIMIC-IV数据库中的每个患者。每个患者都有一个独特的subject_id。</p>
+</li>
+<li><p>“stay_id”: 唯一标识单个患者在急诊室停留的标识符。</p>
+</li>
+<li><p>“seq_num”: 这是一个整数，表示某个诊断在某个留观期中的顺序。例如，如果一个患者在留观期中被诊断为三种疾病，那么每个诊断都会有一个不同的seq_num，以表示诊断的顺序。</p>
+</li>
+<li><p>“icd_version”: 这是指国际疾病分类系统的版本。ICD系统是一种用于编码医疗诊断和手术过程的系统，目前已经发展为第十版（ICD-10）。</p>
+</li>
+<li><p>“icd_code”: 这是一个字符串，表示某个具体的诊断代码，它是根据ICD系统编制的。</p>
+</li>
+<li><p>“icd_title”: 这是一个字符串，表示与诊断代码对应的具体疾病名称或诊断。</p>
+</li>
+</ul>
+<h3 id="edstays"><a href="#edstays" class="headerlink" title="edstays"></a>edstays</h3><p>edstays表是急诊就诊的主要跟踪表<em>。</em>它提供了患者进入急诊室的时间和他们离开急诊室的时间。</p>
+<ul>
+<li><p>“subject_id”: 这是一个唯一标识符，用于表示在MIMIC-IV数据库中的每个患者。每个患者都有一个独特的subject_id。</p>
+</li>
+<li><p>“hadm_id”: 如果患者在 ED 住院后入院，<code>hadm_id</code>将包含医院标识符（范围从 2000000 - 2999999）。可<code>hadm_id</code>用于将 ED 停留与 MIMIC-IV 中的住院联系起来。</p>
+<p>如果<code>hadm_id</code>是<code>NULL</code>，则患者在 ED 停留后未入院。</p>
+</li>
+<li><p>“stay_id”: 唯一标识单个患者在急诊室停留的标识符。</p>
+</li>
+<li><p>“intime”: 给定急诊科住院的入院日期时间 ( <code>intime</code>)</p>
+</li>
+<li><p>“outtime”: 给定急诊科住院的出院日期时间 (outtime )</p>
+</li>
+<li><p>“gender”: 这是指患者的性别，可为”Male”或”Female”。</p>
+</li>
+<li><p>“race”: 这是指患者的种族，可能是”White”, “Black or African American”, “Asian”, “Native Hawaiian or Other Pacific Islander”, “Hispanic or Latino”, “American Indian or Alaska Native”, “Other”, 或者为空值。</p>
+</li>
+<li><p>“arrival_transport”: 这是指患者进入急诊室的方式，可能是”Ambulance”, “Walk-in”, “Other”, 或者为空值。</p>
+<table>
+<thead>
+<tr>
+<th>到达_运输</th>
+<th>数数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>步入</td>
+<td>251849</td>
+</tr>
+<tr>
+<td>救护车</td>
+<td>155752</td>
+</tr>
+<tr>
+<td>未知</td>
+<td>15352</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>1266</td>
+</tr>
+<tr>
+<td>直升机</td>
+<td>868</td>
+</tr>
+</tbody></table>
+<p>“disposition”: 个人离开 ED 的方法。在非空方法中，可能性包括：<img src="/post/a2eaf18b/Snipaste_2023-06-15_16-35-49.png" alt="Snipaste_2023-06-15_16-35-49"></p>
+</li>
+</ul>
+<h3 id="medrecon"><a href="#medrecon" class="headerlink" title="medrecon"></a>medrecon</h3><p>在进入急诊室时，工作人员会询问患者目前正在服用什么药物。此过程称为药物调和，<em>medrecon</em>表存储护理人员的调查结果。</p>
+<p><strong>Links to:</strong></p>
+<ul>
+<li><p><em>edstays</em> on <code>stay_id</code></p>
+</li>
+<li><p>“stay_id”: 唯一标识单个患者在急诊室停留的标识符。</p>
+</li>
+<li><p>“charttime”: 绘制药物调和图的时间。</p>
+</li>
+<li><p>“name”: 这是指药物的通用名称。</p>
+</li>
+<li><p>“etc_rn”: 这是一个整数，表示某个药物在某个ED留观期中的顺序。例如，如果一个患者在留观期中使用了三种药物，那么每种药物都会有一个不同的etc_rn，以表示药物的顺序。</p>
+</li>
+<li><p>“etccode”: 这是表示药物的编码。在MIMIC-IV数据库中，每个药物都具有一个唯一的etccode。</p>
+</li>
+<li><p>“etcdescription”: 这是表示药物的描述。它提供了有关药物名称、剂量和给药方式等信息。</p>
+</li>
+<li><p>“gsn”: 这是指药物的识别号(GSN)。每种药物都具有唯一的gsn。</p>
+</li>
+<li><p>“ndc”: 这是指药物的国家药品编码(ndc)。它是一种被广泛使用的药物标识符。</p>
+</li>
+</ul>
+<h3 id="pyxis"><a href="#pyxis" class="headerlink" title="pyxis"></a>pyxis</h3><p>pyxis表提供了通过 Pyxis 系统进行<em>的</em>药物分配信息。</p>
+<p>请注意，由于同一种药物可能有多个<code>gsn</code>值，因此每一行不一定<em>表示</em>唯一的分配。该<code>med_rn</code>列允许对个别分配进行二次选择。</p>
+<p><strong>Links to:</strong></p>
+<ul>
+<li><em>edstays</em> on <code>stay_id</code></li>
+</ul>
+<p>stay_id：唯一标识单个患者在急诊室停留的标识符。</p>
+<p>charttime ：药物被绘制成图表的时间，这是最接近药物给药时间的时间。</p>
+<p><code>med_rn</code> 用于对单次分配进行分组的药物的行号。</p>
+<p><code>name</code>药名。</p>
+<p><code>gsn</code>通用序列号 (GSN)，一种为每种药物提供代码的本体。</p>
+<p><code>gsn_rn</code>由于药物可能是 GSN 本体中多个组的成员，因此该行号将它们区分开来。的顺序<code>gsn_rn</code>没有意义。</p>
+<h3 id="triage"><a href="#triage" class="headerlink" title="triage"></a>triage</h3><p>分类表包含有关患者在急诊室首次分类时的信息。患者在分诊时由一名护理提供者进行评估，并询问一系列问题以评估他们目前的健康状况。测量他们的生命体征并指定敏锐度水平。根据敏锐度水平，患者要么在候诊室等待稍后的关注，要么优先接受即时护理。</p>
+<p>triage中的所有字段最初都是自由文本。出于去识别化的目的，生命体征和疼痛字段被转换为数值。因此，NULL为文本条目引入了少量值。</p>
+<p><strong>重要注意事项</strong></p>
+<p>没有与分类观察相关的时间。最接近分类时间的近似值是<em>edstays</em><code>intime</code>表中患者的时间。</p>
+<p>此表中的数字条目最初存储为自由文本。因此，这些列需要去标识化。无法简单转换的自由文本条目已被删除。通常，MIMIC-IV中去标识化的应用使用三个下划线（<code>___</code>）表示，以向用户明确表示我们对数据进行了修改。但是，由于数据类型的限制，我们无法在这种情况下执行此操作。因此，<strong>数字列中缺失的数据表示数据已去标识化或未记录数据</strong>。然而，这通常很少见。下表显示了出于去标识化目的删除数据的频率：</p>
+<p>subject_id<br>subject_id是指定单个患者的唯一标识符。与单个subject_id关联的任何行都属于同一个人。</p>
+<p>stay_id<br>唯一标识单个患者在急诊室停留的标识符。</p>
+<p>temperature<br>患者的华氏温度。有些温度可能被错误地记录为摄氏度。</p>
+<p>heartrate<br>患者的心率（每分钟心跳次数）。</p>
+<p>resprate<br>患者的呼吸频率（每分钟呼吸次数）。</p>
+<p>o2sat<br>患者的外周血氧饱和度百分比。</p>
+<p>sbp,dbp<br>患者的收缩压和舒张压分别以毫米汞柱 (mmHg) 为单位测量。</p>
+<p>pain<br>患者自我报告的疼痛程度，评分范围为 0-10。</p>
+<p>acuity<br>基于使用紧急严重程度指数 (ESI) 五级分类系统的敏锐度的优先顺序。此优先级由注册护士指定。级别 1 是最高优先级，而级别 5 是最低优先级。级别是：</p>
+<p>1个<br>当 1 级条件或患者符合 ED 触发标准时，分类过程停止，患者被直接带到房间并要求立即进行医生干预。<br>触发 1 级的患者状况包括无反应、插管、呼吸暂停、无脉搏、需要药物/干预以改变 ESI 水平，例如麻醉剂/腺苷/心脏复律、外伤、中风、stemi<br>2个<br>当确定 2 级条件时，分诊护士会通知资源护士并确定适当的安置。<br>触发 2 级的患者情况包括高风险情况、新发的精神错乱、自杀/杀人念头、嗜睡、癫痫发作或定向障碍、可能的异位妊娠、免疫功能低下的患者发烧、剧烈疼痛/痛苦或生命体征不稳定<br>3个<br>包括需要两种或多种资源（实验室、心电图、X 光、静脉输液等）且生命体征稳定的患者<br>4个<br>患者只需要一种资源（实验室、心电图等）<br>5个<br>不需要任何资源的患者<br>chiefcomplaint<br>患者主诉的去标识化自由文本描述。</p>
+<h3 id="vitalsign"><a href="#vitalsign" class="headerlink" title="vitalsign"></a>vitalsign</h3><p>进入急诊室的患者每 1-4 小时进行一次常规生命体征检查。这些生命体征存储在<em>生命体征</em>表中</p>
+<p><strong>重要注意事项</strong><br>此表中的数字条目最初存储为自由文本。因此，这些列需要去标识化。无法简单转换的自由文本条目已被删除。通常，MIMIC-IV中去标识化的应用使用三个下划线（___）表示，以向用户明确表示我们对数据进行了修改。我们认为最好是省略此修改，而不是通过将大多数数字数据共享为文本来增加用户的困惑和困难。因此，数字列中缺失的数据表示数据已去标识化或未记录数据。但是，在大多数情况下，缺失数据表明没有记录任何信息。下表显示了出于去标识化目的删除数据的频率：</p>
+<p>subject_id<br>subject_id是指定单个患者的唯一标识符。与单个subject_id关联的任何行都属于同一个人。</p>
+<p>stay_id<br>唯一标识单个患者在急诊室停留的标识符。</p>
+<p>charttime<br>绘制生命体征的时间。</p>
+<p>temperature<br>患者的华氏温度。有些温度可能被错误地记录为摄氏度。</p>
+<p>heartrate<br>患者的心率（每分钟心跳次数）。</p>
+<p>resprate<br>患者的呼吸频率（每分钟呼吸次数）。</p>
+<p>o2sat<br>以百分比形式测量的患者氧饱和度。</p>
+<p>sbp,dbp<br>患者的收缩压 (sbp) 和舒张压 (dbp) 以毫米汞柱 (mmHg) 为单位测量。</p>
+<p>rhythm<br>病人的心律。</p>
+<p>pain<br>患者自我报告的疼痛程度，评分范围为 0-10。痛苦被记录为自由文本，可能包含非数字条目</p>
+<h2 id="note"><a href="#note" class="headerlink" title="note"></a>note</h2><p>住院出院小结</p>
+<p>注释模块包含针对住院患者的未识别的自由文本临床注释</p>
+<h3 id="discharge"><a href="#discharge" class="headerlink" title="discharge"></a>discharge</h3><p>出院表包含住院的<em>出院</em>摘要。出院小结是长篇叙述，描述了患者入院的原因、住院过程以及任何相关的出院说明。</p>
+<p>Links to</p>
+<ul>
+<li><em>discharge_detail</em> on <code>note_id</code></li>
+</ul>
+<p>note_id<br>给定注释的唯一标识符。note_id由subject_id、the note_type（总是两个字符长）和一个单调递增的整数组成note_seq，格式如下：subject_id- note_type- note_seq。</p>
+<p>subject_id<br>subject_id是指定单个患者的唯一标识符。与单个subject_id关联的任何行都属于同一个人。</p>
+<p>hadm_id<br>hadm_id是一个整数标识符，对于每个患者住院是唯一的。</p>
+<p>note_type<br>行中记录的注释类型。注释有两种类型：</p>
+<p>‘DS’ - 出院总结<br>‘AD’ - 出院摘要附录</p>
+<p>note_seq<br>一个单调递增的整数，按时间顺序对类别内的笔记进行排序note_type。也就是说，笔记可以按顺序排序note_seq。</p>
+<p>charttime<br>注释绘制的时间——这通常是解释注释内容最相关的时间，但不一定是注释完全写入的时间。</p>
+<p>storetime<br>笔记存储在数据库中的时间。这通常是在笔记完成并签名时</p>
+<h3 id="Discharge-detail"><a href="#Discharge-detail" class="headerlink" title="Discharge detail"></a>Discharge detail</h3><p>出院总结的辅助信息。</p>
+<p><em>与出院</em>表中记录的注释相关的附加信息。可以使用<code>note_id</code>链接到discharge表</p>
+<p>note_id<br>给定注释的唯一标识符。note_id由subject_id、the note_type（总是两个字符长）和一个单调递增的整数组成note_seq，格式如下：subject_id- note_type- note_seq。</p>
+<p>subject_id<br>subject_id是指定单个患者的唯一标识符。与单个subject_id关联的任何行都属于同一个人。</p>
+<p>field_name<br>每行都提供了关于注释的特定方面的详细信息。field_name是给那个方面的名称。从 MIMIC-IV v1.0 开始，可能的值包括：作者</p>
+<p>field_value<br>field_value是与给定关联的值field_name，与注释关联。例如，对于field_name“作者”的，该field_value列包含注释的作者</p>
+<h3 id="Radiology"><a href="#Radiology" class="headerlink" title="Radiology"></a>Radiology</h3><p>放射学报告</p>
+<p>放射<em>学</em>表包含与放射成像相关的自由文本放射学报告。放射学报告涵盖多种成像方式：X 射线、计算机断层扫描、磁共振成像、超声等。自由文本放射学报告是半结构化的，通常遵循给定成像协议的一致模板</p>
+<p>note_id<br>给定注释的唯一标识符。note_id由subject_id、the note_type（总是两个字符长）和一个单调递增的整数组成note_seq，格式如下：subject_id- note_type- note_seq。</p>
+<p>subject_id<br>subject_id是指定单个患者的唯一标识符。与单个subject_id关联的任何行都属于同一个人。</p>
+<p>hadm_id<br>hadm_id是一个整数标识符，对于每个患者住院是唯一的。</p>
+<p>note_type<br>行中记录的注释类型。注释有两种类型：</p>
+<p>‘RR’ - 放射学报告<br>‘AR’ - 放射学报告附录<br>note_seq<br>一个单调递增的整数，按时间顺序对类别内的笔记进行排序note_type。也就是说，笔记可以按顺序排序note_seq。</p>
+<p>charttime<br>注释绘制的时间——这通常是解释注释内容最相关的时间，但不一定是注释完全写入的时间。</p>
+<p>storetime<br>笔记存储在数据库中的时间。这通常是在笔记完成并签名时。</p>
+<h3 id="Radiology-detail"><a href="#Radiology-detail" class="headerlink" title="Radiology detail"></a>Radiology detail</h3><p>放射学笔记的辅助信息</p>
+<p>与放射学表中记录的注释相关的附加信息。可以使用note_id链接到放射表Radiology </p>
+<p>note_id<br>给定注释的唯一标识符。note_id由subject_id、the note_type（总是两个字符长）和一个单调递增的整数组成note_seq，格式如下：subject_id- note_type- note_seq。</p>
+<p>subject_id<br>subject_id是指定单个患者的唯一标识符。与单个subject_id关联的任何行都属于同一个人。</p>
+<p>field_name<br>每行都提供了关于注释的特定方面的详细信息。field_name是给那个方面的名称。从 MIMIC-IV v1.0 开始，可能的值包括：</p>
+<p>附录_note_id<br>parent_note_id<br>cpt_code<br>考试代码<br>考试名称</p>
+<p>field_value<br>field_value是与给定关联的值field_name，与注释关联。例如，对于field_name“作者”的，该field_value列包含注释的作者</p>
+<h1 id="治疗名称"><a href="#治疗名称" class="headerlink" title="治疗名称"></a>治疗名称</h1><table>
+<thead>
+<tr>
+<th>病情</th>
+<th>治疗名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>心脏骤停</td>
+<td>心肺复苏</td>
+</tr>
+<tr>
+<td>急性呼吸窘迫</td>
+<td>呼吸支持治疗</td>
+</tr>
+<tr>
+<td>失学性休克</td>
+<td>休克支持治疗</td>
+</tr>
+</tbody></table>
+<ol>
+<li>急性呼吸窘迫的治疗名称通常称为呼吸支持治疗。呼吸支持治疗包括吸氧、呼吸机支持、呼吸道管理等措施，旨在改善患者的呼吸功能，维持氧合和二氧化碳排泄，以缓解呼吸窘迫症状和维持生命体征的稳定。</li>
+<li>失学性休克的治疗名称通常称为休克支持治疗。休克支持治疗包括补液、使用血管活性药物、纠正酸碱平衡等措施，旨在维持患者的循环功能和器官灌注，以缓解休克症状和维持生命体征的稳定。</li>
+</ol>
+<h1 id="碰见的问题："><a href="#碰见的问题：" class="headerlink" title="碰见的问题："></a>碰见的问题：</h1><h2 id="问GPT的SQL语句前缀"><a href="#问GPT的SQL语句前缀" class="headerlink" title="问GPT的SQL语句前缀"></a>问GPT的SQL语句前缀</h2><p>我已经将mimic-iv1.0数据库导入到了postgresql中并用pgadmin可视化，表名为mimiciv，三个架构分别为mimic_core,mimic_hosp,mimic_icu,请给我在pgadmin中查询subject_id =10014354且hadm_id =29600294的患者数据信息的sql语句</p>
+<p>我已经将mimic-iv2.0数据库导入到了postgresql中并用pgadmin可视化，表名为mimiciv20，我想查mimic_hosp架构中diagnoses_icd表的所有的列名，请给我sql语句</p>
+<h2 id="问题1：选择查询工具"><a href="#问题1：选择查询工具" class="headerlink" title="问题1：选择查询工具"></a>问题1：选择查询工具</h2><p>为什么我用pgadmin4的psql tool，会弹出sql shell类似的窗口</p>
+<p>根据你提供的信息，我猜测你打开的是 pgAdmin 4 的“SQL Shell”工具，而不是“Query Tool”工具。这两个工具在 pgAdmin 4 中具有不同的用途和功能。</p>
+<p>“SQL Shell”工具是 pgAdmin 4 中的命令行界面，它允许你使用 psql 命令行工具来连接和管理 PostgreSQL 数据库。当你打开“SQL Shell”工具时，它会弹出一个类似于 SQL Shell 的命令行窗口，你可以在该窗口中输入 psql 命令。</p>
+<p>如果你想要使用 pgAdmin 4 的图形界面来执行 SQL 查询和管理数据库对象，你应该使用“Query Tool”工具（对应中文就是”**查询工具”**），而不是“SQL Shell”工具。要打开“Query Tool”工具，请按照以下步骤操作：</p>
+<ol>
+<li>打开 pgAdmin 4 工具，然后选择要连接的服务器对象。</li>
+<li>在对象树中展开服务器对象，然后右键单击要查询的数据库对象。</li>
+<li>在弹出的上下文菜单中，选择“Query Tool”选项，这将打开一个新的 SQL 查询窗口。</li>
+<li>在 SQL 查询窗口中，你可以输入 SQL 查询语句，并使用工具栏中的按钮执行查询、保存查询或导出查询结果等操作。</li>
+</ol>
+<p>请注意，这里的“Query Tool”工具是 pgAdmin 4 中的图形界面工具，它提供了许多方便的功能来管理数据库对象和执行 SQL 查询。如果你想要使用 psql 命令行工具来连接和管理数据库，你可以选择使用“SQL</p>
+<h2 id="问题2：查询示例"><a href="#问题2：查询示例" class="headerlink" title="问题2：查询示例"></a>问题2：查询示例</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 设置搜索路径设置为mimic_core</span><br><span class="line"><span class="keyword">SET</span> search_path <span class="operator">=</span> mimic_core; </span><br><span class="line"># 检查当前的搜索路径是否已正确设置为mimic_core架构</span><br><span class="line"><span class="keyword">SHOW</span> search_path;</span><br><span class="line"># 查询是否有subject_id <span class="operator">=</span><span class="number">10014354</span>的患者</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> mimic_core.patients</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;10014354&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="关于icd-code"><a href="#关于icd-code" class="headerlink" title="关于icd_code"></a>关于icd_code</h2><p>ICD-9 和 ICD-10 代码通常都带有小数点。ICD 代码的解释不需要这个小数点；即<code>icd_code</code>‘0010’ 等同于’001.0’。</p>
+<p>MIMIC-IV2.0的icd10是新版本的（不是2019年版本的）：<a target="_blank" rel="noopener" href="https://www.icd10data.com/ICD10CM/Codes">https://www.icd10data.com/ICD10CM/Codes</a></p>
+<h3 id="心脏骤停"><a href="#心脏骤停" class="headerlink" title="心脏骤停"></a>心脏骤停</h3><p>ICD-9 代码列表 390–459：循环系统疾病</p>
+<p>ICD-9-CM: 427.5 </p>
+<p>ICD-10-CM:  I46x</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> subject_id,hadm_id,icd_code</span><br><span class="line"><span class="keyword">FROM</span> mimic_hosp.diagnoses_icd</span><br><span class="line"><span class="keyword">WHERE</span> icd_code <span class="keyword">LIKE</span> <span class="string">&#x27;4275%&#x27;</span> <span class="keyword">OR</span> icd_code <span class="keyword">LIKE</span> <span class="string">&#x27;I46%&#x27;</span> </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> subject_id;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Match found: p14071752		21211403	I462	17:18:20.236 28/7/2156</span><br><span class="line">Match found: p15896656		29053618	I468	04:35:54.543 12/9/2179</span><br><span class="line"># Match found: p18573443	28015626	I462</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在ICD-10编码标准中，I46.2、I46.8和I46.9均表示心搏骤停，但它们之间有细微的差异。</span><br><span class="line"></span><br><span class="line">具体来说，I46.2表示由于电击治疗导致的心搏骤停，而I46.8表示其他特定原因导致的心搏骤停，例如过度透析导致的心搏骤停或药物过量导致的心搏骤停等。而I46.9则表示未特定原因导致的心搏骤停。</span><br><span class="line"></span><br><span class="line">因此，在使用ICD-10编码标准时，需要根据患者的具体情况和诊断信息来选择相应的编码。</span><br></pre></td></tr></table></figure>
+
+<h3 id="急性呼吸窘迫综合征"><a href="#急性呼吸窘迫综合征" class="headerlink" title="急性呼吸窘迫综合征"></a>急性呼吸窘迫综合征</h3><p>ICD-9-CM: 518.81</p>
+<p>ICD-10-CM: J80</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Match found: p13080738		20217710	51881</span><br><span class="line"># Match found: p13620446		20475690	51881</span><br><span class="line">Match found: p14285792		23014125	J80</span><br></pre></td></tr></table></figure>
+
+<h3 id="失血性性休克"><a href="#失血性性休克" class="headerlink" title="失血性性休克"></a>失血性性休克</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Match found: p13184012		23868910	R571</span><br><span class="line">Match found: p15315368		28289785	R571</span><br><span class="line">Match found: p17818849		29560301	R571</span><br><span class="line">Match found: p18080257		29393950	R571</span><br></pre></td></tr></table></figure>
+
+<h3 id="匹配"><a href="#匹配" class="headerlink" title="匹配"></a>匹配</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">请按照我的需求给我写一段python代码：</span><br><span class="line">我想做一个匹配，我有一份csv文件，路径在E:\Work\mimic\Dataset\sid4725.csv,里面是一千多行的1维数据，这是他前三行的内容：</span><br><span class="line">&quot;subject_id&quot;</span><br><span class="line">10013569</span><br><span class="line">10026161</span><br><span class="line">10062020</span><br><span class="line">我还有一个MIMIC-IV-Waveform-Database文件夹，路径在E:\Work\mimic\MIMIC-IV-Waveform-Database\physionet.org\files\mimic4wdb\0.1.0\waves，再下一层的文件名是p100-p199，再下一层的文件名是pxxxxxxxx，举例：p100文件夹内有几个文件夹，其中一个文件夹的名字是p10014354，</span><br><span class="line">如果上面说的csv文件里的每个数（即subject_id）和MIMIC-IV-Waveform-Database文件夹里的文件名（这里指pxxxxxxxx）去掉p之后的8位数一样，则输出到控制台，提示：sid4725.csv文件和MIMIC-IV-Waveform-Database文件夹都已经按升序排列</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Match found: p14071752</span><br><span class="line">Match found: p15896656</span><br><span class="line">Match found: p18573443</span><br></pre></td></tr></table></figure>
+
+<h3 id="和手术相关的表"><a href="#和手术相关的表" class="headerlink" title="和手术相关的表"></a>和手术相关的表</h3><table>
+<thead>
+<tr>
+<th>d_hcpcs</th>
+<th>主要用于为hcpcsevents表中使用的代码提供可读的定义（有cpt）  查不到我想要的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>d_icd_procedures</td>
+<td>ICD医疗过程词典表。</td>
+</tr>
+<tr>
+<td>poe</td>
+<td>患者医嘱信息的参考表。“order_type”：该列是医嘱的类型，例如药物治疗、手术等。</td>
+</tr>
+<tr>
+<td>procedures_icd</td>
+<td>存储患者实施过的医疗过程的参考表</td>
+</tr>
+<tr>
+<td>datetimeevents</td>
+<td>包含了 ICU 中的一些时间相关的事件的记录信息</td>
+</tr>
+<tr>
+<td>d_items</td>
+<td>包含了 ICU 中的所有测量指标、药品、手术等项目的元数据信息</td>
+</tr>
+<tr>
+<td>procedureevents</td>
+<td><strong>医疗过程事件表</strong>包含了 ICU 中患者的各种手术、治疗和检查等操作信息</td>
+</tr>
+</tbody></table>
+<h3 id="根据subject-id和hadm-id查出对应cpt代码（失败）"><a href="#根据subject-id和hadm-id查出对应cpt代码（失败）" class="headerlink" title="根据subject_id和hadm_id查出对应cpt代码（失败）"></a>根据subject_id和hadm_id查出对应cpt代码（失败）</h3><p>在hosp模块的hpcsevents表中</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 根据subject_id和hadm_id查出对应cpt代码</span></span><br><span class="line"><span class="comment">-- SELECT hcpcs_cd</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_hosp.hcpcsevents</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;14285792&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;23014125&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> hadm_id</span><br></pre></td></tr></table></figure>
+
+<p>很遗憾，我没查到任意一个我自己想要的，只能按照一般的来了，gpt随便问了一下：</p>
+<p>心脏骤停的CPT代码通常与心肺复苏（CPR）相关。以下是一些比较常见的心脏骤停相关的CPT代码：</p>
+<p>92950：心肺复苏（包括胸外按压和人工呼吸）<br>92953：心肺复苏（包括胸外按压和人工呼吸），经气管插管或气管切开<br>92960：心肺复苏（包括胸外按压和人工呼吸），经导管直接插入气管<br>92977：体外心脏去纤维化术（包括心肺复苏和电除颤）<br>需要说明的是，CPT代码的使用可能因为医疗机构、地区和时间等因素而有所不同，以上CPT代码仅为参考，具体情况需要根据具体的研究目的和条件进行查找和匹配。此外，还需要了解CPT编码的使用规范和标准，以便正确地应用和解读编码信息。</p>
+<h3 id="根据subject-id和hadm-id查出procedures-icd表对应手术详细信息（失败）"><a href="#根据subject-id和hadm-id查出procedures-icd表对应手术详细信息（失败）" class="headerlink" title="根据subject_id和hadm_id查出procedures_icd表对应手术详细信息（失败）"></a>根据subject_id和hadm_id查出procedures_icd表对应手术详细信息（失败）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 根据subject_id和hadm_id查d_icd_procedures</span></span><br><span class="line"><span class="comment">-- SELECT *</span></span><br><span class="line"><span class="keyword">SELECT</span> icd_code</span><br><span class="line"><span class="keyword">FROM</span> mimic_hosp.procedures_icd</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;15896656&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;29053618&#x27;</span> <span class="keyword">AND</span> chartdate <span class="operator">=</span> <span class="string">&#x27;2179-09-12 00:00:00&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> seq_num</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 手术编码结果：</span><br><span class="line">&quot;5A12012&quot; -- 这个编码表示进行单次手动测量心输出量，主要用于评估心脏功能和血流动力学状态。</span><br><span class="line">&quot;5A1955Z&quot;</span><br><span class="line">&quot;0WCG0ZZ&quot;</span><br><span class="line">&quot;0W3G0ZZ&quot;</span><br><span class="line">&quot;02HV33Z&quot;  -- 这个编码表示使用经皮穿刺开放性技术进行心脏辅助系统的植入，主要用于治疗心衰等心脏疾病。</span><br><span class="line">&quot;0BH17EZ&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 如果查到了再根据查到的procedures_icd编码去d_icd_procedures表里查解释说明</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_hosp.d_icd_procedures</span><br><span class="line"><span class="keyword">WHERE</span> icd_code <span class="keyword">IN</span> (</span><br><span class="line">	<span class="keyword">SELECT</span> icd_code</span><br><span class="line">	<span class="keyword">FROM</span> mimic_hosp.procedures_icd</span><br><span class="line">	<span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;15896656&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;29053618&#x27;</span> <span class="keyword">AND</span> chartdate <span class="operator">=</span> <span class="string">&#x27;2179-09-12 00:00:00&#x27;</span></span><br><span class="line">	<span class="keyword">ORDER</span> <span class="keyword">BY</span> seq_num</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_16-46-18.png" alt="Snipaste_2023-06-08_16-46-18"></p>
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_16-48-18.png" alt="Snipaste_2023-06-08_16-48-18"></p>
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_16-49-37.png" alt="Snipaste_2023-06-08_16-49-37"></p>
+<h3 id="根据subject-id和hadm-id查出poe表对应医嘱信息-（失败）"><a href="#根据subject-id和hadm-id查出poe表对应医嘱信息-（失败）" class="headerlink" title="根据subject_id和hadm_id查出poe表对应医嘱信息  （失败）"></a>根据subject_id和hadm_id查出poe表对应医嘱信息  （失败）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查某个患者的医嘱</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_hosp.poe</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;15896656&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;29053618&#x27;</span> <span class="keyword">AND</span> ordertime <span class="operator">&gt;=</span> <span class="string">&#x27;2179-09-12 00:16:46&#x27;</span> <span class="keyword">AND</span> ordertime <span class="operator">&lt;=</span> <span class="string">&#x27;2179-09-12 21:43:51&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> ordertime;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_17-19-40.png" alt="Snipaste_2023-06-08_17-19-40"></p>
+<p>查了下医嘱类型：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> order_type</span><br><span class="line"><span class="keyword">FROM</span> mimic_hosp.poe</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;15896656&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;29053618&#x27;</span> <span class="keyword">AND</span> ordertime <span class="operator">&gt;=</span> <span class="string">&#x27;2179-09-12 00:16:46&#x27;</span> <span class="keyword">AND</span> ordertime <span class="operator">&lt;=</span> <span class="string">&#x27;2179-09-12 21:43:51&#x27;</span></span><br><span class="line"><span class="comment">-- ORDER BY ordertime;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-09_10-43-32.png" alt="Snipaste_2023-06-09_10-43-32"></p>
+<p>医嘱类型含义：</p>
+<p>MIMIC-IV2.0中的mimic_hosp模块中的poe表中的order_type列包含了多种医嘱类型。以下是其中几种类型及其含义：</p>
+<ol>
+<li>“ADT orders”: 包括与患者入院和出院相关的医嘱，如护理评估、病历记录等。</li>
+<li>“Blood Bank”: 包括与输血相关的医嘱，如血型鉴定、血液成分治疗等。</li>
+<li>“Cardiology”: 包括与心脏疾病相关的医嘱，如心电图、心脏监测等。</li>
+<li>“Critical Care”: 包括与重症监护相关的医嘱，如机械通气、血流动力学监测等。</li>
+<li>“General Care”: 包括与一般护理相关的医嘱，如病人转移、伤口护理等。</li>
+<li>“IV therapy”: 包括与静脉输液治疗相关的医嘱，如输液速率、输液种类等。</li>
+<li>“Lab”: 包括与实验室检测相关的医嘱，如血常规、尿常规等。</li>
+<li>“Medications”: 包括药物治疗相关的医嘱，如用药剂量、用药频率等。</li>
+<li>“Nutrition”: 包括与营养治疗相关的医嘱，如饮食种类、进食方式等。</li>
+<li>“Radiology”: 包括与放射治疗相关的医嘱，如X光检查、CT检查等。</li>
+<li>“Respiratory”: 包括与呼吸治疗相关的医嘱，如吸氧、呼吸机操作等。</li>
+</ol>
+<p>需要注意的是，不同的医疗机构可能会有不同的医嘱类型分类方式，因此在具体应用时需要结合具体的情况进行理解和使用。</p>
+<p>医嘱子类型含义：</p>
+<ol>
+<li>“Activity”: 活动相关的医嘱，例如安排患者进行康复训练、体育锻炼等。</li>
+<li>“Blood tests”: 血液检测相关的医嘱，例如安排患者进行血常规、凝血功能等检查。</li>
+<li>“CPAP for OSA”: 针对睡眠呼吸暂停综合症的持续正压通气（CPAP）治疗相关的医嘱。</li>
+<li>“Cryoprecipitate Product Order”: 冻沉淀制品治疗相关的医嘱。</li>
+<li>“Diet Order”: 饮食相关的医嘱，例如安排患者进行特殊膳食、禁食等。</li>
+<li>“ECG”: 心电图检查相关的医嘱。</li>
+<li>“Frozen Plasma Product Order”: 冰冻血浆治疗相关的医嘱。</li>
+<li>“General Xray”: 一般X光检查相关的医嘱。</li>
+<li>“Hemodynamic monitoring”: 血流动力学监测相关的医嘱，例如安排患者进行动脉压力监测等。</li>
+<li>“IV access”: 静脉通路相关的医嘱，例如安排患者进行静脉穿刺、置管等。</li>
+<li>“IV fluids”: 静脉输液相关的医嘱，例如安排患者进行生理盐水、葡萄糖等输液治疗。</li>
+<li>“Mechanical Ventilation”: 机械通气治疗相关的医嘱。</li>
+<li>“Other”: 其他类型的医嘱，没有特定的分类。</li>
+<li>“Oxygen Therapy”: 氧疗治疗相关的医嘱。</li>
+<li>“Platelet Product Order”: 血小板制品治疗相关的医嘱。</li>
+<li>“Postop”: 术后相关的医嘱，例如安排患者进行术后康复、护理等。</li>
+<li>“Red Cell Product Order”: 红细胞制品治疗相关的医嘱。</li>
+<li>“Restraints”: 约束治疗相关的医嘱，例如安排患者进行限制活动、绑带约束等。</li>
+<li>“Therapeutic devices/DVT/Prophylaxis”: 治疗性设备、深静脉血栓预防相关的医嘱。</li>
+<li>“Tubes/Drains”: 包括管道和引流管的相关医嘱，例如安排患者进行胃肠减压、胸腔引流等。</li>
+<li>“Ultrasound”: 超声检查相关的医嘱。</li>
+<li>“Vitals/Monitoring”: 生命体征监测相关的医嘱，例如安排患者进行血压监测、呼吸频率监测等。</li>
+</ol>
+<h3 id="根据subject-id和hadm-id查datetimeevents表和d-items表（失败）"><a href="#根据subject-id和hadm-id查datetimeevents表和d-items表（失败）" class="headerlink" title="根据subject_id和hadm_id查datetimeevents表和d_items表（失败）"></a>根据subject_id和hadm_id查datetimeevents表和d_items表（失败）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 根据subject_id和hadm_id查datetimeevents</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_icu.datetimeevents</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;14071752&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;21211403&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> charttime</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_17-26-50.png" alt="Snipaste_2023-06-08_17-26-50"></p>
+<h3 id="根据subject-id和hadm-id查procedureevents表"><a href="#根据subject-id和hadm-id查procedureevents表" class="headerlink" title="根据subject_id和hadm_id查procedureevents表"></a>根据subject_id和hadm_id查procedureevents表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 根据subject_id和hadm_id查procedureevents表</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_icu.procedureevents</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;14071752&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;21211403&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> starttime</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_17-33-59.png" alt="Snipaste_2023-06-08_17-33-59"></p>
+<h3 id="根据subject-id和hadm-id查chartevents（成功）"><a href="#根据subject-id和hadm-id查chartevents（成功）" class="headerlink" title="根据subject_id和hadm_id查chartevents（成功）"></a>根据subject_id和hadm_id查chartevents（成功）</h3><p>不过很遗憾，没有看见心电相关的，全是呼吸相关的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_icu.chartevents</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;14071752&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;21211403&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> charttime</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> itemid</span><br><span class="line"><span class="keyword">FROM</span> mimic_icu.chartevents</span><br><span class="line"><span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;14071752&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;21211403&#x27;</span> <span class="keyword">AND</span> charttime <span class="operator">=</span> <span class="string">&#x27;2156-07-28 17:19:00&#x27;</span> <span class="keyword">OR</span> charttime <span class="operator">=</span> <span class="string">&#x27;2156-07-28 17:26:00&#x27;</span> </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> charttime</span><br></pre></td></tr></table></figure>
+
+<p>从7856行到7887行，共32行</p>
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_18-32-47-1686220480290.png" alt="Snipaste_2023-06-08_18-32-47"></p>
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_18-33-32-1686220486011.png" alt="Snipaste_2023-06-08_18-33-32"></p>
+<h3 id="看charttime还是storetime"><a href="#看charttime还是storetime" class="headerlink" title="看charttime还是storetime"></a>看charttime还是storetime</h3><p>MIMIC-IV-Waveform-Database中的时间应该对应MIMIC-IV2.0 中chartevents表中的charttime还是storetime呢？</p>
+<p>GPT答：charttime</p>
+<p>MIMIC-IV-Waveform-Database 中的时间戳应该对应 MIMIC-IV2.0 中 “chartevents” 表中的 “charttime” 字段，而不是 “storetime” 字段。</p>
+<p>这是因为 “charttime” 字段表示记录这些数据的时间点，通常是医疗保健工作者记录数据的时间。而 MIMIC-IV-Waveform-Database 中的时间戳表示记录数据的时间点，即数据采集的时间点，与 “chartevents” 表中的 “charttime” 字段所表示的时间点更加一致。</p>
+<p>在进行数据整合和分析时，应该将 MIMIC-IV-Waveform-Database 中的波形数据与 “chartevents” 表中的其他生理参数和临床数据进行整合，以获取更全面和准确的患者信息。需要注意的是，在进行数据整合时，可能需要进行时间戳的校准和匹配，以确保数据的一致性和准确性。</p>
+<h3 id="根据itemid查d-items表"><a href="#根据itemid查d-items表" class="headerlink" title="根据itemid查d_items表"></a>根据itemid查d_items表</h3><p>itemid从chartevents表中查到的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 心脏骤停根据itemid查d_items表</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimic_icu.d_items</span><br><span class="line"><span class="keyword">WHERE</span> itemid <span class="keyword">IN</span></span><br><span class="line">				(<span class="keyword">SELECT</span> itemid</span><br><span class="line">				<span class="keyword">FROM</span> mimic_icu.chartevents</span><br><span class="line">				<span class="keyword">WHERE</span> subject_id <span class="operator">=</span> <span class="string">&#x27;14071752&#x27;</span> <span class="keyword">AND</span> hadm_id <span class="operator">=</span> <span class="string">&#x27;21211403&#x27;</span> <span class="keyword">AND</span> charttime <span class="operator">=</span> <span class="string">&#x27;2156-07-28 17:19:00&#x27;</span> <span class="keyword">OR</span> charttime <span class="operator">=</span> <span class="string">&#x27;2156-07-28 17:26:00&#x27;</span> </span><br><span class="line">				<span class="keyword">ORDER</span> <span class="keyword">BY</span> charttime)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/post/a2eaf18b/Snipaste_2023-06-08_19-11-22.png" alt="Snipaste_2023-06-08_19-11-22"></p>
+<h3 id="解析81739927-0001-hea"><a href="#解析81739927-0001-hea" class="headerlink" title="解析81739927_0001.hea"></a>解析81739927_0001.hea</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">81739927_0001 4 62.4725/999.56 320</span><br><span class="line">81739927_0001e.dat 516x4 200/mV 14 8192 0 512 0 II</span><br><span class="line">81739927_0001e.dat 516x4 200/mV 14 8192 0 512 0 V</span><br><span class="line">81739927_0001e.dat 516x4 200/mV 14 8192 0 512 0 aVR</span><br><span class="line">81739927_0001r.dat 516 1637(1230)/Ohm 10 512 0 32736 0 Resp</span><br><span class="line"></span><br><span class="line">signal 0 (II): channel=0 bandpass=[0.5,35]</span><br><span class="line">signal 1 (V): channel=1 bandpass=[0.5,35]</span><br><span class="line">signal 2 (aVR): channel=2 bandpass=[0.5,35]</span><br></pre></td></tr></table></figure>
+
+<p>解析：</p>
+<p>这是一个 MIMIC-IV 波形数据库中某个 .hea 文件的内容，文件中包含了一些波形信号的相关信息。具体地，文件内容的含义如下：</p>
+<p>第一行：记录号为 81739927_0001，共有 4 个信号通道，采样率为 62.4725 Hz，数据长度为 320。<br>第二行：第一个信号通道的数据文件名为 81739927_0001e.dat，数据为 516 行 4 列，增益为 200mV，基线为 14，ADC 最大值为 8192，最小值为 0，采样位数为 512，通道名称为 II。<br>第三行：第二个信号通道的数据文件名为 81739927_0001e.dat，数据为 516 行 4 列，增益为 200mV，基线为 14，ADC 最大值为 8192，最小值为 0，采样位数为 512，通道名称为 V。<br>第四行：第三个信号通道的数据文件名为 81739927_0001e.dat，数据为 516 行 4 列，增益为 200mV，基线为 14，ADC 最大值为 8192，最小值为 0，采样位数为 512，通道名称为 aVR。<br>第五行：第四个信号通道的数据文件名为 81739927_0001r.dat，数据为 516 行 1 列，增益为 1637（1230）Ohm，基线为 10，ADC 最大值为 32736，最小值为 0，采样位数为 512，通道名称为 Resp。<br>第六行：对于信号通道 0，使用 bandpass=[0.5,35] 的带通滤波器进行滤波。<br>第七行：对于信号通道 1，使用 bandpass=[0.5,35] 的带通滤波器进行滤波。<br>第八行：对于信号通道 2，使用 bandpass=[0.5,35] 的带通滤波器进行滤波。<br>该文件中包含了四个波形信号通道，分别为 II、V、aVR 和 Resp。其中前三个信号通道的数据文件名为 81739927_0001e.dat，后一个信号通道的数据文件名为 81739927_0001r.dat。每个信号通道的采样率和采样位数、增益、基线、ADC 最大值和最小值等信息都有所不同。文件中还给出了对信号通道进行带通滤波的相关信息。</p>
+<h3 id="解析81739927-hea"><a href="#解析81739927-hea" class="headerlink" title="解析81739927.hea"></a>解析81739927.hea</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#wfdb 10.7</span><br><span class="line">81739927/21 7 62.4725/999.56 6661120 09:00:17.566 16/8/2148</span><br><span class="line">81739927_0000 0</span><br><span class="line">81739927_0001 320</span><br><span class="line">81739927_0002 3200</span><br><span class="line">81739927_0003 544</span><br><span class="line">81739927_0004 96</span><br><span class="line">81739927_0005 1920</span><br><span class="line">81739927_0006 224</span><br><span class="line">81739927_0007 96</span><br><span class="line">81739927_0008 1431360</span><br><span class="line">81739927_0009 1280</span><br><span class="line">81739927_0010 641280</span><br><span class="line">81739927_0011 1600</span><br><span class="line">81739927_0012 776320</span><br><span class="line">81739927_0013 640</span><br><span class="line">81739927_0014 1227840</span><br><span class="line">81739927_0015 23360</span><br><span class="line">81739927_0016 741760</span><br><span class="line">81739927_0017 1236800</span><br><span class="line">81739927_0018 320</span><br><span class="line">81739927_0019 5760</span><br><span class="line">81739927_0020 566400</span><br><span class="line"># subject_id 10014354</span><br><span class="line"># hadm_id 29600294</span><br></pre></td></tr></table></figure>
+
+<p>解析：</p>
+<p>这是一个 MIMIC-IV 波形数据库中某个数据文件的 .hea 描述文件，用于描述该数据文件中所包含的信号通道和一些相关的参数信息。具体内容的含义如下：</p>
+<p>第一行：文件格式为 wfdb 10.7，表示该文件符合 WFDB（Waveform Database）格式规范的版本号为 10.7。<br>第二行：记录号为 81739927/21，表示该数据文件对应的患者记录号为 81739927，该记录中包含了 21 个信号通道。<br>第三行：共有 7 个信号通道，采样率为 62.4725 Hz，数据长度为 6661120，记录<code>开始时间为 09:00:17.566</code>，采样位数为 16，信号精度为 8 bit，数据文件长度为 2148。<br>第四到第二十四行：分别描述了 21 个信号通道的相关信息。每行的格式为“信号通道名称 数据长度”，其中数据长度表示该信号通道在数据文件中的数据长度。<br>第二十五行及以后：包含了一些与该数据文件相关的患者信息，其中 subject_id 表示患者的唯一标识符，hadm_id 表示患者在医院中的唯一标识符。<br>该文件中包含了 21 个信号通道，具体每个信号通道的含义和数据类型需要查看数据文件中的 .dat 文件或数据字典文件来确定。该文件中的信息可以帮助使用者了解数据文件的基本特征、信号通道数目和采样率等信息，以及对数据文件进行后续的处理和应用。</p>
+<h3 id="MIMIC2-2心脏骤停病人"><a href="#MIMIC2-2心脏骤停病人" class="headerlink" title="MIMIC2.2心脏骤停病人"></a>MIMIC2.2心脏骤停病人</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在diagnosis表中查出所有心脏骤停患者的subject_id</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mimiciv_ed.diagnosis</span><br><span class="line"><span class="keyword">WHERE</span> icd_code <span class="keyword">LIKE</span> <span class="string">&#x27;4275%&#x27;</span> <span class="keyword">OR</span> icd_code <span class="keyword">LIKE</span> <span class="string">&#x27;I46%&#x27;</span> </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> icd_code;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">subject_id	stay_id				note_id</span><br><span class="line">13025850	39910982	&quot;I469&quot;	&quot;13025850-DS-3&quot;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://wh1720848796.github.io">Yincha</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://wh1720848796.github.io/post/a2eaf18b.html">http://wh1720848796.github.io/post/a2eaf18b.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://wh1720848796.github.io" target="_blank">饮茶</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/HatsuneMiku6.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/bae4ff13.html" title="Redis复习"><img class="cover" src="/img/HatsuneMiku8.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Redis复习</div></div></a></div><div class="next-post pull-right"><a href="/post/e94425f6.html" title="SpringBoot笔记"><img class="cover" src="/img/HatsuneMiku10.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringBoot笔记</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/EmiyaShirou.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Yincha</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wh1720848796" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://gitee.com/wwhhbs" target="_blank" title="Gitee"><i class="fab fa-git" style="color: #EE2C2C;"></i></a><a class="social-icon" href="mailto:1720848796@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">微信:wh13782 QQ:1720848796</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MIMIC-IV2-0%E8%A7%A3%E6%9E%90"><span class="toc-text">MIMIC-IV2.0解析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#core"><span class="toc-text">core</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#patients"><span class="toc-text">patients</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#admissions"><span class="toc-text">admissions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#transfers"><span class="toc-text">transfers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hosp"><span class="toc-text">hosp</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#admissions-1"><span class="toc-text">admissions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#d-hcpcs"><span class="toc-text">d_hcpcs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#d-icd-diagnoses"><span class="toc-text">d_icd_diagnoses</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#d-icd-procedures"><span class="toc-text">d_icd_procedures</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#d-labitems"><span class="toc-text">d_labitems</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#diagnoses-icd"><span class="toc-text">diagnoses_icd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#drgcodes"><span class="toc-text">drgcodes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#emar"><span class="toc-text">emar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#emar-detail"><span class="toc-text">emar_detail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hcpcsevents"><span class="toc-text">hcpcsevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#labevents"><span class="toc-text">labevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microbiologyevents"><span class="toc-text">microbiologyevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#omr"><span class="toc-text">omr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#patients-1"><span class="toc-text">patients</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pharmacy"><span class="toc-text">pharmacy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poe"><span class="toc-text">poe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poe-detail"><span class="toc-text">poe_detail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prescriptions"><span class="toc-text">prescriptions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#procedures-icd"><span class="toc-text">procedures_icd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#services"><span class="toc-text">services</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#icu"><span class="toc-text">icu</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#chartevents"><span class="toc-text">chartevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#d-items"><span class="toc-text">d_items</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#datetimeevents"><span class="toc-text">datetimeevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#icustays"><span class="toc-text">icustays</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#inputevents"><span class="toc-text">inputevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#outputevents"><span class="toc-text">outputevents</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#procedureevents"><span class="toc-text">procedureevents</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MIMIC2-2%E6%96%B0%E5%A2%9E"><span class="toc-text">MIMIC2.2新增</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ed"><span class="toc-text">ed</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diagnosis"><span class="toc-text">diagnosis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#edstays"><span class="toc-text">edstays</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#medrecon"><span class="toc-text">medrecon</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pyxis"><span class="toc-text">pyxis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triage"><span class="toc-text">triage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vitalsign"><span class="toc-text">vitalsign</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#note"><span class="toc-text">note</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#discharge"><span class="toc-text">discharge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Discharge-detail"><span class="toc-text">Discharge detail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Radiology"><span class="toc-text">Radiology</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Radiology-detail"><span class="toc-text">Radiology detail</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B2%BB%E7%96%97%E5%90%8D%E7%A7%B0"><span class="toc-text">治疗名称</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A2%B0%E8%A7%81%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-text">碰见的问题：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AEGPT%E7%9A%84SQL%E8%AF%AD%E5%8F%A5%E5%89%8D%E7%BC%80"><span class="toc-text">问GPT的SQL语句前缀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%981%EF%BC%9A%E9%80%89%E6%8B%A9%E6%9F%A5%E8%AF%A2%E5%B7%A5%E5%85%B7"><span class="toc-text">问题1：选择查询工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%982%EF%BC%9A%E6%9F%A5%E8%AF%A2%E7%A4%BA%E4%BE%8B"><span class="toc-text">问题2：查询示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8Eicd-code"><span class="toc-text">关于icd_code</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%83%E8%84%8F%E9%AA%A4%E5%81%9C"><span class="toc-text">心脏骤停</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A5%E6%80%A7%E5%91%BC%E5%90%B8%E7%AA%98%E8%BF%AB%E7%BB%BC%E5%90%88%E5%BE%81"><span class="toc-text">急性呼吸窘迫综合征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%B1%E8%A1%80%E6%80%A7%E6%80%A7%E4%BC%91%E5%85%8B"><span class="toc-text">失血性性休克</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%B9%E9%85%8D"><span class="toc-text">匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%8C%E6%89%8B%E6%9C%AF%E7%9B%B8%E5%85%B3%E7%9A%84%E8%A1%A8"><span class="toc-text">和手术相关的表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEsubject-id%E5%92%8Chadm-id%E6%9F%A5%E5%87%BA%E5%AF%B9%E5%BA%94cpt%E4%BB%A3%E7%A0%81%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="toc-text">根据subject_id和hadm_id查出对应cpt代码（失败）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEsubject-id%E5%92%8Chadm-id%E6%9F%A5%E5%87%BAprocedures-icd%E8%A1%A8%E5%AF%B9%E5%BA%94%E6%89%8B%E6%9C%AF%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="toc-text">根据subject_id和hadm_id查出procedures_icd表对应手术详细信息（失败）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEsubject-id%E5%92%8Chadm-id%E6%9F%A5%E5%87%BApoe%E8%A1%A8%E5%AF%B9%E5%BA%94%E5%8C%BB%E5%98%B1%E4%BF%A1%E6%81%AF-%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="toc-text">根据subject_id和hadm_id查出poe表对应医嘱信息  （失败）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEsubject-id%E5%92%8Chadm-id%E6%9F%A5datetimeevents%E8%A1%A8%E5%92%8Cd-items%E8%A1%A8%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="toc-text">根据subject_id和hadm_id查datetimeevents表和d_items表（失败）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEsubject-id%E5%92%8Chadm-id%E6%9F%A5procedureevents%E8%A1%A8"><span class="toc-text">根据subject_id和hadm_id查procedureevents表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEsubject-id%E5%92%8Chadm-id%E6%9F%A5chartevents%EF%BC%88%E6%88%90%E5%8A%9F%EF%BC%89"><span class="toc-text">根据subject_id和hadm_id查chartevents（成功）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%8Bcharttime%E8%BF%98%E6%98%AFstoretime"><span class="toc-text">看charttime还是storetime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEitemid%E6%9F%A5d-items%E8%A1%A8"><span class="toc-text">根据itemid查d_items表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%9E%9081739927-0001-hea"><span class="toc-text">解析81739927_0001.hea</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%9E%9081739927-hea"><span class="toc-text">解析81739927.hea</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MIMIC2-2%E5%BF%83%E8%84%8F%E9%AA%A4%E5%81%9C%E7%97%85%E4%BA%BA"><span class="toc-text">MIMIC2.2心脏骤停病人</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/64bba5dd.html" title="美年旅游项目总结">美年旅游项目总结</a><time datetime="2023-07-12T09:37:21.000Z" title="发表于 2023-07-12 17:37:21">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/6cca3e64.html" title="IDEA64.exe.vmoptions文件详解">IDEA64.exe.vmoptions文件详解</a><time datetime="2023-07-12T08:25:01.000Z" title="发表于 2023-07-12 16:25:01">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/f8e09374.html" title="Vue">Vue</a><time datetime="2023-07-12T07:26:54.000Z" title="发表于 2023-07-12 15:26:54">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/67587465.html" title="LeetCode心得笔记">LeetCode心得笔记</a><time datetime="2023-07-12T02:55:37.000Z" title="发表于 2023-07-12 10:55:37">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/fc291202.html" title="Idea文件夹右键新建没有JavaClass选项">Idea文件夹右键新建没有JavaClass选项</a><time datetime="2023-07-12T01:47:09.000Z" title="发表于 2023-07-12 09:47:09">2023-07-12</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/HatsuneMiku6.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Yincha</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo.whfire.top',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.whfire.top',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="//at.alicdn.com/t/c/font_4022529_htmrp77uopm.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="Hello World,Where there is a will there is a way,Live and Learn" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/01/assets/haru01.model.json"},"display":{"position":"left","width":75,"height":150},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body></html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>饮茶 - 一个乐于分享技术的博主</title><meta name="author" content="Yincha"><meta name="copyright" content="Yincha"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="饮茶">
+<meta property="og:url" content="http://wh1720848796.github.io/index.html">
+<meta property="og:site_name" content="饮茶">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wh1720848796.github.io/img/EmiyaShirou.png">
+<meta property="article:author" content="Yincha">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wh1720848796.github.io/img/EmiyaShirou.png"><link rel="shortcut icon" href="/img/EmiyaShirou.png"><link rel="canonical" href="http://wh1720848796.github.io/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"NRN3QGVHM9","apiKey":"69a66e43b5218453c7420d0e818ebed9","indexName":"wh-code","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '饮茶',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-07-12 18:41:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/EmiyaShirou.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友人帐</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('/img/HatsuneMiku.png')"><nav id="nav"><span id="blog-info"><a href="/" title="饮茶"><span class="site-name">饮茶</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友人帐</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">饮茶</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/wh1720848796" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://gitee.com/wwhhbs" target="_blank" title="Gitee"><i class="fab fa-git" style="color: #EE2C2C;"></i></a><a class="social-icon" href="mailto:1720848796@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/64bba5dd.html" title="美年旅游项目总结">美年旅游项目总结</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-12T09:37:21.000Z" title="发表于 2023-07-12 17:37:21">2023-07-12</time></span></div><div class="content">美年旅游项目总结1. 项目背景美年旅游管理系统是一款应用于旅游管理机构的业务系统。
+美年旅游网提供跟团游、自助游、游轮旅游、自驾游、定制游以及景点门票预订、机票预订、火车票预订服务，还有牛人专线、首付出发旅游等品质高端、价格实惠的旅游路线。
+项目特色：  微美年系统使用Dubbo+Zookeeper实现分布式
+  利用Vue.js整合ElementUI框架完成整个项目界面搭建
+  利用Maven对项目进行结构划分、打包、安装
+  结合Apache POI实现Office操作
+  机构运营情况通过图形报表Echarts进行动态分析
+  用SpringSecurity实现对权限控制
+应用场景：  ElementUI技术：国企，学校和众多网站的管理界面
+  Zookeeper技术：众多分布式系统的管理技术
+  Dubbo技术：当当网，中国移动等公司
+  Echarts：京东，淘宝后台管理系统
+掌握：  1：掌握项目的功能介绍；
+  2：项目中的2套系统
+ü 管理系统（后台人员），移动端系统（客户）
+  3：技术架构
+ü 掌握项目开发技术
+  4：功能架构
+ü 掌握 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/6cca3e64.html" title="IDEA64.exe.vmoptions文件详解">IDEA64.exe.vmoptions文件详解</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-12T08:25:01.000Z" title="发表于 2023-07-12 16:25:01">2023-07-12</time></span></div><div class="content">源文件
+123456789101112131415-Xms128m-Xmx750m-XX:ReservedCodeCacheSize=512m-XX:+UseConcMarkSweepGC-XX:SoftRefLRUPolicyMSPerMB=50-XX:CICompilerCount=2-XX:+HeapDumpOnOutOfMemoryError-XX:-OmitStackTraceInFastThrow-ea-Dsun.io.useCanonCaches=false-Djdk.http.auth.tunneling.disabledSchemes=&quot;&quot;-Djdk.attach.allowAttachSelf=true-Djdk.module.illegalAccess.silent=true-Dkotlinx.coroutines.debug=off
+
+修改为
+1234567891011121314151617-server-Xms1G-Xmx1G-XX:ReservedCodeCacheSize=1G-XX:+UseConcMarkSweepGC-XX:So ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/f8e09374.html" title="Vue">Vue</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-12T07:26:54.000Z" title="发表于 2023-07-12 15:26:54">2023-07-12</time></span></div><div class="content">day03 Vue&amp;书城项目第一阶段第一章 Vue1. 学习目标
+了解什么是框架
+了解什么是Vue
+掌握Vue的基本语法
+了解Vue的生命周期
+
+2. 内容讲解2.1 什么是框架任何编程语言在最初的时候都是没有框架的，后来随着在实际开发过程中不断总结『经验』，积累『最佳实践』，慢慢的人们发现很多『特定场景』下的『特定问题』总是可以『套用固定解决方案』。
+于是有人把成熟的『固定解决方案』收集起来，整合在一起，就成了『框架』。
+在使用框架的过程中，我们往往只需要告诉框架『做什么（声明）』，而不需要关心框架『怎么做（编程）』。
+对于Java程序来说，我们使用框架就是导入那些封装了『固定解决方案』的jar包，然后通过『配置文件』告诉框架做什么，就能够大大简化编码，提高开发效率。我们使用过的junit其实就是一款单元测试框架。
+而对于JavaScript程序来说，我们使用框架就是导入那些封装了『固定解决方案』的『js文件』，然后在框架的基础上编码。
+
+用洗衣服来类比框架：
+典型应用场景：洗衣服
+输入数据：衣服、洗衣液、水
+不使用框架：手洗
+使用框架：使用洗衣机，对人来说，只需要按键，具体 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/67587465.html" title="LeetCode心得笔记">LeetCode心得笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-12T02:55:37.000Z" title="发表于 2023-07-12 10:55:37">2023-07-12</time></span></div><div class="content">一、Java相关1.时间复杂度12https://blog.csdn.net/xy010902100449/article/details/46537507https://blog.csdn.net/zhen921/article/details/80212625
+
+
+
+2.刷题顺序1数组-&gt; 链表-&gt; 哈希表-&gt;字符串-&gt;栈与队列-&gt;树-&gt;回溯-&gt;贪心-&gt;动态规划-&gt;图论-&gt;高级数据结构
+
+1234567891011121314151617181920212223基础篇（30 天）基础永远是最重要的，先把最最基础的这些搞熟，磨刀不误砍柴工。    数组，队列，栈    链表    树与递归    哈希表    双指针思想篇（30 天）这些思想是投资回报率极高的，强烈推荐每一个小的专题花一定的时间掌握    二分    滑动窗口    搜索（BFS，DFS，回溯）    动态规划提高篇（31 天）收益不明显,需要技术积累,使用技巧    贪心    分治    位运算    KMP &amp; RK    并查集    前缀树 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/fc291202.html" title="Idea文件夹右键新建没有JavaClass选项">Idea文件夹右键新建没有JavaClass选项</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-12T01:47:09.000Z" title="发表于 2023-07-12 09:47:09">2023-07-12</time></span></div><div class="content">1.解决办法
+File —— Project Structure——Modules—— 将该文件夹设置为 “Source”
+
+那为啥会这样呢。首先你要知道，idea里面不同的文件夹样式代表不同的意思。我从官网上截图列在下面了。其他的我们不说，就说说Directory和Package。Directory下面是不能创建class的，它只是一个“目录”，而Package是一个“包”，是可以创建class文件的。所以既然“文件夹”要作为一个“java package”，需要符合包的命名规则——不能以数字开头，不能是纯数字，不能含有特殊字符，不能是java关键字。因为包的路径要出现在class、interface的最上面，需要引入的。
+　　举个例子，你在idea里面创建了一个文件夹，命名“001”，那他就是一个Directory，其下面是不能创建java文件的，也就是右键没有“Java Class”选项。但是如果你命为”day001”,那它就是一个Package，是可以正常的创建java文件的，，也就是右键有“Java Class”选项。如果此时还不能创建java文件，你可以试试上面我提到的那个 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/7062dd8.html" title="MyBatis之动态SQL">MyBatis之动态SQL</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-11T10:04:12.000Z" title="发表于 2023-07-11 18:04:12">2023-07-11</time></span></div><div class="content">1.MyBatis动态SQL简介
+   动态 SQL是MyBatis强大特性之一。极大的简化我们拼装SQL的操作
+
+   动态 SQL 元素和使用 JSTL 或其他类似基于 XML 的文本处理器相似
+
+   MyBatis 采用功能强大的基于 OGNL 的表达式来简化操作
+
+
+if
+choose (when, otherwise)
+trim (where, set)
+foreach
+
+   OGNL（ Object Graph Navigation Language ）对象图导航语言，这是一种强大的
+
+表达式语言，通过它可以非常方便的来操作对象属性。 类似于我们的EL，SpEL等
+访问对象属性：      person.name
+调用方法：        person.getName()
+调用静态属性/方法： @java.lang.Math@PI  
+​                  @java.util.UUID@randomUUID()
+调用构造方法：      new com.atguigu.bean.Person(‘admin’).name
+运算符：             ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/d7513ddb.html" title="Mybatis之PageHelper分页插件">Mybatis之PageHelper分页插件</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-11T09:36:52.000Z" title="发表于 2023-07-11 17:36:52">2023-07-11</time></span></div><div class="content">1.PageHelper 分页插件简介
+PageHelper是MyBatis中非常方便的第三方分页插件
+
+官方文档：
+
+
+https://github.com/pagehelper/Mybatis-PageHelper/blob/master/README_zh.md
+
+我们可以对照官方文档的说明，快速的使用插件
+
+2.PageHelper的使用步骤
+   导入以下jar包
+
+pagehelper-5.0.0.jar 
+jsqlparser-0.9.5.jar
+123456&lt;!-- pagehelper --&gt;&lt;dependency&gt;    &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;    &lt;artifactId&gt;pagehelper&lt;/artifactId&gt;    &lt;version&gt;5.0.0&lt;/version&gt;&lt;/dependency&gt;
+
+
+   在MyBatis全局配置文件中配置分页插件
+
+1234&lt;plugins&gt;     ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/d0573b63.html" title="Vue-生命周期钩子">Vue-生命周期钩子</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-11T07:35:04.000Z" title="发表于 2023-07-11 15:35:04">2023-07-11</time></span></div><div class="content">含义官方文档：
+每个 Vue 组件实例在创建时都需要经历一系列的初始化步骤，比如设置好数据侦听，编译模板，挂载实例到 DOM，以及在数据改变时更新 DOM。在此过程中，它也会运行被称为生命周期钩子的函数，让开发者有机会在特定阶段运行自己的代码。
+简单点来说，钩子函数就是你创建的Vue在初始化、更新数据、销毁时会被自动调用的函数。
+八大钩子函数分别是：
+beforeCreate,created,beforeMount,mounted,beforeUpdate,updated,beforeDestory,destoryed
+官网声明周期图
+举例123456789101112131415161718192021222324252627282930313233343536373839404142434445&lt;script&gt;    var vue = new Vue(&#123;        el: &#x27;#app&#x27;,        data: &#123;            pagination: &#123;//分页相关模型数据                ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/1bf5626f.html" title="MySQL数据类型和Java数据类型对应关系表">MySQL数据类型和Java数据类型对应关系表</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-07-11T02:55:57.000Z" title="发表于 2023-07-11 10:55:57">2023-07-11</time></span></div><div class="content">前言MySql 数据类型和 Java 数据类型之间的转换是很灵活的。 
+一般来讲，任何 MySql 数据类型都可以被转换为一个 java.lang.String。
+任何 MySql 数字类型都可以被转换为任何一种 Java 数字类型。
+(当然这样也可能出一些四舍五入，溢出，精度丢失之类的问题)。 
+
+Java基础类型与包装类型
+如果数据库字段是允许为空的，使用包装类。
+
+　　如果不允许为空，使用包装的时候，如果你往数据库插入null值，此时就会抛出异常。　　然后你就可以对异常进行捕获并处理。
+
+使用基本数据类型的时候，如果字段是NULL，那么JDBC会返回0，但是这里会有一个问题。　　有可能0在你的业务逻辑代表着特定含义，这时候就可能出现一些意想不到的后果。
+
+总结：在项目中去使用包装类型而不是基本数据类型，这样可以使你编写代码更简单
+ResultSet.getObject() 对 MySql 类型和 Java 类型转换表
+
+
+MySql 类型名
+GetColumnClassName 返回值
+返回的 Java 类
+
+
+
+bit(1) (MySQL-5.0)
+BIT
+java.lang. ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/post/11f4b451.html" title="Dubbo复习">Dubbo复习</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-06-20T11:31:40.000Z" title="发表于 2023-06-20 19:31:40">2023-06-20</time></span></div><div class="content">2. Apache Dubbo概述Apache Dubbo是一款高性能的Java RPC框架。其前身是阿里巴巴公司开源的一个高性能、轻量级的开源Java RPC框架，可以和Spring框架无缝集成。
+RPC并不是一个具体的技术，而是指整个网络远程调用过程
+Dubbo官网地址：http://dubbo.apache.org 
+Dubbo提供了三大核心能力：
+
+面向接口的远程方法调用，
+
+智能容错和负载均衡，
+
+服务自动注册和发现
+
+
+Dubbo架构图（Dubbo官方提供）如下：
+
+节点角色说明：
+
+虚线都是异步访问，实线都是同步访问 蓝色虚线:在启动时完成的功能 红色虚线(实线)都是程序运行过程中执行的功能
+调用关系说明:
+
+服务容器负责启动，加载，运行服务提供者。
+服务提供者在启动时，向注册中心注册自己提供的服务。
+服务消费者在启动时，向注册中心订阅自己所需的服务。
+注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。
+服务消费者，从提供者地址列表中，基于负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。
+服务消费者和提供者，在 ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/EmiyaShirou.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Yincha</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wh1720848796" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://gitee.com/wwhhbs" target="_blank" title="Gitee"><i class="fab fa-git" style="color: #EE2C2C;"></i></a><a class="social-icon" href="mailto:1720848796@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">微信:wh13782 QQ:1720848796</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/64bba5dd.html" title="美年旅游项目总结">美年旅游项目总结</a><time datetime="2023-07-12T09:37:21.000Z" title="发表于 2023-07-12 17:37:21">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/6cca3e64.html" title="IDEA64.exe.vmoptions文件详解">IDEA64.exe.vmoptions文件详解</a><time datetime="2023-07-12T08:25:01.000Z" title="发表于 2023-07-12 16:25:01">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/f8e09374.html" title="Vue">Vue</a><time datetime="2023-07-12T07:26:54.000Z" title="发表于 2023-07-12 15:26:54">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/67587465.html" title="LeetCode心得笔记">LeetCode心得笔记</a><time datetime="2023-07-12T02:55:37.000Z" title="发表于 2023-07-12 10:55:37">2023-07-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/post/fc291202.html" title="Idea文件夹右键新建没有JavaClass选项">Idea文件夹右键新建没有JavaClass选项</a><time datetime="2023-07-12T01:47:09.000Z" title="发表于 2023-07-12 09:47:09">2023-07-12</time></div></div></div></div><div class="card-widget" id="card-newest-comments"><div class="item-headline"><i class="fas fa-comment-dots"></i><span>最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/IDEA/"><span class="card-category-list-name">IDEA</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">13</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Python/"><span class="card-category-list-name">Python</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/SQL/"><span class="card-category-list-name">SQL</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E3%80%8A%E5%88%A9%E7%94%A8Python%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E3%80%8B/"><span class="card-category-list-name">《利用Python进行数据分析》</span><span class="card-category-list-count">16</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"><span class="card-category-list-name">个人博客</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">深度学习</span><span class="card-category-list-count">7</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" style="font-size: 1.1em; color: #999">项目总结</a> <a href="/tags/Linux/" style="font-size: 1.1em; color: #999">Linux</a> <a href="/tags/NumPy/" style="font-size: 1.23em; color: #999ea6">NumPy</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%8E%B0/" style="font-size: 1.23em; color: #999ea6">代码复现</a> <a href="/tags/Python/" style="font-size: 1.1em; color: #999">Python</a> <a href="/tags/Vue/" style="font-size: 1.1em; color: #999">Vue</a> <a href="/tags/Java%E5%89%8D%E7%AB%AF/" style="font-size: 1.1em; color: #999">Java前端</a> <a href="/tags/Redis/" style="font-size: 1.1em; color: #999">Redis</a> <a href="/tags/%E5%AD%A6%E4%B9%A0NumPy%E5%92%8CPandas/" style="font-size: 1.5em; color: #99a9bf">学习NumPy和Pandas</a> <a href="/tags/Mybatis/" style="font-size: 1.23em; color: #999ea6">Mybatis</a> <a href="/tags/SpringBoot/" style="font-size: 1.1em; color: #999">SpringBoot</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/Test/" style="font-size: 1.37em; color: #99a4b2">Test</a> <a href="/tags/%E7%AE%A1%E7%90%86%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" style="font-size: 1.1em; color: #999">管理个人博客</a> <a href="/tags/Gitee/" style="font-size: 1.1em; color: #999">Gitee</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 1.1em; color: #999">深度学习</a> <a href="/tags/IDEA/" style="font-size: 1.23em; color: #999ea6">IDEA</a> <a href="/tags/scipy/" style="font-size: 1.1em; color: #999">scipy</a> <a href="/tags/Pytorch/" style="font-size: 1.1em; color: #999">Pytorch</a> <a href="/tags/LeetCode/" style="font-size: 1.1em; color: #999">LeetCode</a> <a href="/tags/%E5%A4%8D%E4%B9%A0SQL/" style="font-size: 1.1em; color: #999">复习SQL</a> <a href="/tags/Dubbo/" style="font-size: 1.1em; color: #999">Dubbo</a> <a href="/tags/PostSQL/" style="font-size: 1.1em; color: #999">PostSQL</a> <a href="/tags/MyBatis/" style="font-size: 1.1em; color: #999">MyBatis</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/07/"><span class="card-archive-list-date">七月 2023</span><span class="card-archive-list-count">9</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/06/"><span class="card-archive-list-date">六月 2023</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">五月 2023</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">四月 2023</span><span class="card-archive-list-count">29</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">46</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2023-04-11T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-07-12T10:41:47.506Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/HatsuneMiku.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Yincha</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: (str) => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: (subtitleType) => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  }
+}
+</script><script>function subtitleType () {
+  if (true) {
+    typedJSFn.init(["美好的一天，从巡街开始~","念念不忘，必有回响。","让恐惧的人勇敢，让痛苦的人坚强，让悲伤的人充满希望。"])
+  } else {
+    document.getElementById("subtitle").innerHTML = '美好的一天，从巡街开始~'
+  }
+}
+typedJSFn.run(subtitleType)</script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://twikoo.whfire.top',
+        region: '',
+        pageSize: 2,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (false) {
+          const name = 'src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script src="//at.alicdn.com/t/c/font_4022529_htmrp77uopm.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="Hello World,Where there is a will there is a way,Live and Learn" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/01/assets/haru01.model.json"},"display":{"position":"left","width":75,"height":150},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body></html>
